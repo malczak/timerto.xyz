@@ -82,6 +82,18 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              limit: 4096,
+              name: "assets/[name]-[sha512:hash:base64:7].[ext]"
+            }
+          }
+        ]
       }
     ]
   },
