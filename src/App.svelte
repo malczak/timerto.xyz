@@ -45,9 +45,9 @@
   });
 </script>
 
-<div class="w-full">
+<div class="w-full h-full">
 
-  <div class="max-w-3xl mx-auto h-screen pb-4 overflow-hidden flex flex-col">
+  <div class="max-w-3xl mx-auto h-full pb-4 flex flex-col">
 
     <ul class="flex py-4">
       <li class="mr-3">
@@ -71,9 +71,9 @@
     {#if !hasEvents}
       <EmptyState class="w-full flex-1" on:click={onAddTimer} />
     {:else}
-      <div class="flex-1 overflow-scroll">
+      <div class="flex-1">
         {#each events as event}
-          <div class="w-full text-center mb-2">
+          <div class="w-full text-center my-8">
             <TimeCounter
               class="bg-gray-400"
               title={event.name}
@@ -88,7 +88,7 @@
   {#if showCreateEvent}
     <TimerEditor
       on:save={evt => {
-        console.log('EVENT:', evt.detail.event);
+        events = [evt.detail.event, ...events];
         showCreateEvent = false;
       }}
       on:cancel={() => (showCreateEvent = false)} />

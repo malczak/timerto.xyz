@@ -63,8 +63,9 @@
 
 <div>
   {#if title}
-    <p class="my-1">{title}</p>
+    <p class="my-1 text-xl">{title}</p>
   {/if}
+  <p class="my-1 text-sm">{moment(date).format('LL')}</p>
   {#if date}
     <div class="counter counter--{validComponentsCount} {className}">
       {#if validComponentsCount === 6}
