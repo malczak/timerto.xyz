@@ -1,5 +1,6 @@
 <script>
-  import { toString, styleWithRatio } from "./helpers.js";
+  import { toString } from "../utils/number.js";
+  import { styleWithRatio } from "../utils/styles.js";
 
   export let type;
   export let style = {};

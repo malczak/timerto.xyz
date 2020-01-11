@@ -1,5 +1,3 @@
-export const toString = value => `00${Math.abs(value).toString()}`.substr(-2);
-
 export const toStylesStr = styles =>
   Object.keys(styles)
     .map(name => `${name}: ${styles[name]}`)

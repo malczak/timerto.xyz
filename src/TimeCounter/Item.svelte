@@ -1,5 +1,6 @@
 <script>
-  import { toString, styleWithRatio } from "./helpers.js";
+  import { toString } from "../utils/number.js";
+  import { styleWithRatio } from "../utils/styles.js";
 
   export let value = null;
   export let label = null;
@@ -7,7 +8,7 @@
   export let ratio = null;
 </script>
 
-<div class="relative counter__item" style={styleWithRatio(style, ratio)}>
+<div class="counter__item" style={styleWithRatio(style, ratio)}>
   <span class="counter__value">
     {#if value != null}{toString($value)}{/if}
   </span>

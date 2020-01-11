@@ -11,8 +11,6 @@
         flex-shrink: 1;
         width: 100%;
         height: 100%;
-      //   background: blue;
-      //   color: #fff;
       }
 
       & .counter__group,
@@ -62,8 +60,17 @@
         }
       }
 
-      & .counter__item {
-      //   background: red;
+
+      /* special narrower counters for 1, 2 components */
+      &.counter--1 .counter__group.counter__h,
+      &.counter--2 .counter__group.counter__h {
+        align-content: center;
+        justify-content: center;
+        & .counter__item {
+            width: 30%;
+            flex: unset;
+        }
       }
+
     }
   }

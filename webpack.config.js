@@ -4,9 +4,17 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const Purgecss = require("@fullhuman/postcss-purgecss");
 
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
+console.log(`🏗  Building' for '${mode}'`);
+
+const purgecss = new Purgecss({
+  content: [`./**/*.svelte`],
+  rejected: true,
+  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+});
 
 module.exports = {
   entry: {
@@ -61,7 +69,18 @@ module.exports = {
            * For developing, use 'style-loader' instead.
            * */
           prod ? MiniCssExtractPlugin.loader : "style-loader",
-          "css-loader"
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              ident: "postcss",
+              plugins: [
+                require("tailwindcss"),
+                require("autoprefixer"),
+                ...(prod ? [purgecss] : [])
+              ]
+            }
+          }
         ]
       }
     ]
