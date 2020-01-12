@@ -4,6 +4,8 @@
   import { createEventDispatcher } from "svelte";
   import DatePicker from "./DatePicker.svelte";
 
+  // NOTE: all dates are in UTC
+
   // -----------------------
   // Properties
   // -----------------------
@@ -18,7 +20,7 @@
   // -----------------------
   const dispatch = createEventDispatcher();
 
-  let date = moment();
+  let date = moment().utc();
 
   $: isValid = name != null && name.length > 1 && date && date.isValid();
 
@@ -53,16 +55,18 @@
   <DatePicker
     class="w-full px-3 mb-4"
     title="Birthdate"
-    minDate={moment()
+    minDate={moment
+      .utc()
       .subtract(80, 'year')
       .startOf('year')
       .toDate()}
-    maxDate={moment()
+    maxDate={moment
+      .utc()
       .add(80, 'year')
       .startOf('year')
       .toDate()}
-    value={moment()}
-    on:change={evt => (date = moment(evt.detail.date).utc())} />
+    value={moment.utc()}
+    on:change={evt => (date = moment.utc(evt.detail.date))} />
 
   <div class="relative inline-block text-center">
     <button

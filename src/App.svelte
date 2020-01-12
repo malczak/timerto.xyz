@@ -1,3 +1,8 @@
+<script context="module">
+  import { events } from "./stores.js";
+  events.load();
+</script>
+
 <script>
   import moment from "moment";
   import { onMount } from "svelte";
@@ -8,9 +13,9 @@
 
   import { time } from "./stores.js";
 
-  import TimeCounter from "./TimeCounter/index.svelte";
-  import TimerEditor from "./views/TimerEditor.svelte";
-  import EmptyState from "./components/EmptyState.svelte";
+  import TimeCounter from "app/TimeCounter/index.svelte";
+  import TimerEditor from "app/views/TimerEditor.svelte";
+  import EmptyState from "app/components/EmptyState.svelte";
 
   moment.locale("pl");
 
@@ -18,31 +23,11 @@
   // Internal
   // -----------------------
   let showCreateEvent = false;
-  let events = [];
-
-  $: hasEvents = events && events.length !== 0;
+  $: hasEvents = $events.length !== 0;
 
   function onAddTimer() {
     showCreateEvent = true;
   }
-
-  // -----------------------
-  // Lifecycle
-  // -----------------------
-  onMount(() => {
-    events = window.localStorage.getItem("events") || [];
-
-    setTimeout(() => {
-      events = [
-        { name: "So far in future", date: moment().add(2, "years") },
-        { name: "Just seconds", date: moment().add(2, "months") },
-        { name: "Days", date: moment().add(2, "days") },
-        { name: "Hours away", date: moment().add(2, "hours") },
-        { name: "Minutes away", date: moment().add(2, "minutes") },
-        { name: "Just seconds", date: moment().add(10, "seconds") }
-      ];
-    }, 1500);
-  });
 </script>
 
 <div class="w-full h-full">
@@ -72,12 +57,14 @@
       <EmptyState class="w-full flex-1" on:click={onAddTimer} />
     {:else}
       <div class="flex-1">
-        {#each events as event}
+        {#each $events as event}
           <div class="w-full text-center my-8">
             <TimeCounter
-              class="bg-gray-400"
+              class="bg-gray-200 border border-gray-400 rounded shadow-md"
+              positiveClass="text-gray-900"
+              negativeClass="text-gray-600"
               title={event.name}
-              date={moment(event.date)} />
+              date={moment(event.date).local()} />
           </div>
         {/each}
       </div>
@@ -88,8 +75,9 @@
   {#if showCreateEvent}
     <TimerEditor
       on:save={evt => {
-        events = [evt.detail.event, ...events];
-        showCreateEvent = false;
+        if (events.add(evt.detail.event)) {
+          showCreateEvent = false;
+        }
       }}
       on:cancel={() => (showCreateEvent = false)} />
   {/if}

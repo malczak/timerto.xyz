@@ -32,13 +32,18 @@
 
   function getDate() {
     const { year, month, day } = state;
-    return moment([year, month, day]).startOf("day");
+    const date = moment([year, month, day]);
+    const now = moment();
+    return (date.unix() > now.unix()
+      ? date.startOf("day")
+      : date.endOf("day")
+    ).utc();
   }
 
   function getYearSpan() {
     return {
-      min: moment(minDate),
-      max: moment(maxDate)
+      min: moment.utc(minDate),
+      max: moment.utc(maxDate)
     };
   }
 
@@ -60,7 +65,7 @@
     if (year) {
       const yearSpan = getYearSpan();
       return months.filter((_, index) => {
-        let m = moment([year, index, 1]);
+        let m = moment.utc([year, index, 1]);
         return isValid(
           m.clone().startOf("month"),
           m.clone().endOf("month"),
@@ -77,7 +82,7 @@
     if (year && month != null) {
       const yearSpan = getYearSpan();
       return days.filter(day => {
-        let m = moment([year, month, day]);
+        let m = moment.utc([year, month, day]);
         return isValid(
           m.clone().startOf("day"),
           m.clone().endOf("day"),
@@ -140,9 +145,9 @@
   // Lifecycle
   // -----------------------
   onMount(() => {
-    const m = moment(value);
+    const m = moment.utc(value);
     if (m.isValid()) {
-      setState({ year: m.year(), month: m.month(), day: m.day() });
+      setState({ year: m.year(), month: m.month(), day: m.date() });
     }
   });
 </script>
