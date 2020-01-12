@@ -155,10 +155,10 @@
 <div class={cn('datepicker', className)}>
   <label
     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-    htmlFor="grid-last-name">
+    htmlFor="date-picker">
     {title}
   </label>
-  <div class="flex flex-row">
+  <div id="date-picker" class="flex flex-row">
     <Dropdown
       class="relative w-3/12 mr-2"
       options={mapDaysToOptions(getValidDays(state))}

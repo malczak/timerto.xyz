@@ -6,11 +6,12 @@
   // -----------------------
   let className;
   export { className as class };
+  export let id;
   export let options;
   export let selectedValue;
 </script>
 
-<div class={cn('dropdown relative', className)}>
+<div {id} class={cn('dropdown relative', className)}>
   <select
     class="block text-s appearance-none w-full bg-gray-200 border
     border-gray-200 text-gray-700 py-3 px-3 rounded leading-tight

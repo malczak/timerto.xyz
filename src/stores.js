@@ -29,7 +29,8 @@ const serialize = events => {
     v: 1,
     e: events.map(event => ({
       n: event.name,
-      t: moment.utc(event.date).unix()
+      t: moment.utc(event.date).unix(),
+      ...(event.group && { g: event.group })
     }))
   });
 };
@@ -37,7 +38,11 @@ const serialize = events => {
 const deserialize = data => {
   const { v, e: events } = JSON.parse(data);
   if (v == EventsStore.version) {
-    return events.map(e => ({ name: e.n, date: moment.unix(e.t).utc() }));
+    return events.map(e => ({
+      name: e.n,
+      date: moment.unix(e.t).utc(),
+      ...(e.g && { group: e.g })
+    }));
   }
 };
 

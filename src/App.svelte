@@ -19,16 +19,36 @@
 
   moment.locale("pl");
 
+  const NoGroup = "-no-group-";
+
   // -----------------------
   // Internal
   // -----------------------
   let showCreateEvent = false;
   $: hasEvents = $events.length !== 0;
+  $: groupedEvents = $events.reduce((accum, event) => {
+    const group = event.group || NoGroup;
+    const groupEvents = accum[group] || [];
+    groupEvents.push(event);
+    accum[group] = groupEvents;
+    return accum;
+  }, {});
 
   function onAddTimer() {
     showCreateEvent = true;
   }
 </script>
+
+<style>
+  .group .group__chevron {
+    transform: none;
+    transition: transform 0.4s;
+  }
+
+  .group .group__chevron--down {
+    transform: rotate(180deg);
+  }
+</style>
 
 <div class="w-full h-full">
 
@@ -57,16 +77,42 @@
       <EmptyState class="w-full flex-1" on:click={onAddTimer} />
     {:else}
       <div class="flex-1">
-        {#each $events as event}
-          <div class="w-full text-center my-8">
-            <TimeCounter
-              class="bg-gray-200 border border-gray-400 rounded shadow-md"
-              positiveClass="text-gray-900"
-              negativeClass="text-gray-600"
-              title={event.name}
-              date={moment(event.date).local()} />
+        {#each Object.keys(groupedEvents) as group}
+          <div class="group">
+            {#if group !== NoGroup}
+              <div class="flex flex-row items-center group__name">
+                <p class="flex-1">{group}</p>
+                <button class="group__chevron">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="feather feather-chevron-up">
+                    <polyline points="18 15 12 9 6 15" />
+                  </svg>
+                </button>
+              </div>
+            {/if}
+
+            {#each groupedEvents[group] as event}
+              <div class="w-full text-center my-8">
+                <TimeCounter
+                  class="bg-gray-200 border border-gray-400 rounded shadow-md"
+                  positiveClass="text-gray-900"
+                  negativeClass="text-gray-600"
+                  title={event.name}
+                  date={moment(event.date).local()} />
+              </div>
+            {/each}
           </div>
         {/each}
+
       </div>
     {/if}
 

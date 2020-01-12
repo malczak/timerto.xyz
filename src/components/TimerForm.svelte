@@ -3,6 +3,7 @@
   import moment from "moment";
   import { createEventDispatcher } from "svelte";
   import DatePicker from "./DatePicker.svelte";
+  import GroupPicker from "./GroupPicker.svelte";
 
   // NOTE: all dates are in UTC
 
@@ -10,7 +11,6 @@
   // Properties
   // -----------------------
   let className;
-  export let name;
   export let label;
   export let showCancel = true;
   export { className as class };
@@ -20,6 +20,8 @@
   // -----------------------
   const dispatch = createEventDispatcher();
 
+  let name;
+  let group = "";
   let date = moment().utc();
 
   $: isValid = name != null && name.length > 1 && date && date.isValid();
@@ -30,7 +32,7 @@
 
   function onSave() {
     if (isValid) {
-      dispatch("save", { event: { name, date } });
+      dispatch("save", { event: { name, date, group } });
     }
   }
 </script>
@@ -39,14 +41,14 @@
   <div class="w-full px-3 mb-4">
     <label
       class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-      htmlFor="grid-last-name">
+      htmlFor="input-event-name">
       Name
     </label>
     <input
       class="appearance-none block w-full bg-gray-200 text-gray-700 border
       border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none
       focus:bg-white focus:border-gray-500"
-      id="grid-last-name"
+      id="input-event-name"
       type="text"
       placeholder="Event name"
       bind:value={name} />
@@ -67,6 +69,8 @@
       .toDate()}
     value={moment.utc()}
     on:change={evt => (date = moment.utc(evt.detail.date))} />
+
+  <GroupPicker class="w-full px-3 mb-4" title="Group" bind:value={group} />
 
   <div class="relative inline-block text-center">
     <button
