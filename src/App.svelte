@@ -6,6 +6,7 @@
 <script>
   import moment from "moment";
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
 
   import "moment/locale/pl";
   import "./styles/index.less";
@@ -16,6 +17,7 @@
   import TimeCounter from "app/TimeCounter/index.svelte";
   import TimerEditor from "app/views/TimerEditor.svelte";
   import EmptyState from "app/components/EmptyState.svelte";
+  import ChevronDown from "app/components/icons/ChevronDown.svelte";
 
   moment.locale("pl");
 
@@ -25,6 +27,8 @@
   // Internal
   // -----------------------
   let showCreateEvent = false;
+  let groupCollapseState = {};
+
   $: hasEvents = $events.length !== 0;
   $: groupedEvents = $events.reduce((accum, event) => {
     const group = event.group || NoGroup;
@@ -36,6 +40,11 @@
 
   function onAddTimer() {
     showCreateEvent = true;
+  }
+
+  function toggleGroupCollapse(group) {
+    groupCollapseState[group] =
+      groupCollapseState[group] === true ? false : true;
   }
 </script>
 
@@ -80,36 +89,32 @@
         {#each Object.keys(groupedEvents) as group}
           <div class="group">
             {#if group !== NoGroup}
-              <div class="flex flex-row items-center group__name">
+              <button
+                class="w-full py-4 flex flex-row items-center group__name"
+                on:click={() => toggleGroupCollapse(group)}>
                 <p class="flex-1">{group}</p>
-                <button class="group__chevron">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="feather feather-chevron-up">
-                    <polyline points="18 15 12 9 6 15" />
-                  </svg>
-                </button>
-              </div>
+                <span
+                  class="group__chevron {groupCollapseState[group] ? 'group__chevron--down' : ''}">
+                  <ChevronDown />
+                </span>
+              </button>
             {/if}
 
-            {#each groupedEvents[group] as event}
-              <div class="w-full text-center my-8">
-                <TimeCounter
-                  class="bg-gray-200 border border-gray-400 rounded shadow-md"
-                  positiveClass="text-gray-900"
-                  negativeClass="text-gray-600"
-                  title={event.name}
-                  date={moment(event.date).local()} />
+            {#if !groupCollapseState[group]}
+              <div in:fade out:fade>
+                {#each groupedEvents[group] as event}
+                  <div class="w-full text-center my-8">
+                    <TimeCounter
+                      class="bg-gray-200 border border-gray-400 rounded
+                      shadow-md"
+                      positiveClass="text-gray-900"
+                      negativeClass="text-gray-600"
+                      title={event.name}
+                      date={moment(event.date).local()} />
+                  </div>
+                {/each}
               </div>
-            {/each}
+            {/if}
           </div>
         {/each}
 

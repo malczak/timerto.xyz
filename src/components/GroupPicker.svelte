@@ -5,6 +5,7 @@
   import { events } from "app/stores";
 
   import Dropdown from "app/components/Dropdown.svelte";
+  import XCircle from "app/components/icons/XCircle";
 
   const noGroupOption = { label: "- None -", value: "-none-" };
   const createGroupOption = { label: "- Create New -", value: "-new-" };
@@ -29,8 +30,8 @@
 
     if (group === createGroupOption.value) {
       isCreatingNewGroup = true;
+      // NOTE: wait for `refresh`
       tick().then(() => {
-        console.log("tick", newGroupInput);
         newGroupInput && newGroupInput.focus();
       });
       return;
@@ -69,7 +70,6 @@
         new Set()
       );
       groups = [...groupsSet];
-      console.log(events, groups);
     });
   });
 </script>
@@ -103,21 +103,7 @@
         <button
           class="ml-2 text-gray-600 hover:text-red-700"
           on:click={() => cancelCreateGroup()}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-x-circle">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="15" y1="9" x2="9" y2="15" />
-            <line x1="9" y1="9" x2="15" y2="15" />
-          </svg>
+          <XCircle />
         </button>
       </div>
     {/if}
