@@ -6,7 +6,6 @@
 <script>
   import moment from "moment";
   import { onMount } from "svelte";
-  import { fade } from "svelte/transition";
 
   import "moment/locale/pl";
   import "./styles/index.less";
@@ -14,14 +13,11 @@
 
   import { time } from "./stores.js";
 
-  import TimeCounter from "app/TimeCounter/index.svelte";
   import TimerEditor from "app/views/TimerEditor.svelte";
   import EmptyState from "app/components/EmptyState.svelte";
-  import ChevronDown from "app/components/icons/ChevronDown.svelte";
+  import EventsGroup, { NoGroup } from "app/components/EventsGroup";
 
   moment.locale("pl");
-
-  const NoGroup = "-no-group-";
 
   // -----------------------
   // Internal
@@ -32,8 +28,8 @@
   $: hasEvents = $events.length !== 0;
   $: groupedEvents = $events.reduce((accum, event) => {
     const group = event.group || NoGroup;
-    const groupEvents = accum[group] || [];
-    groupEvents.push(event);
+    const groupEvents = accum[group] || { name: group, events: [] };
+    groupEvents.events.push(event);
     accum[group] = groupEvents;
     return accum;
   }, {});
@@ -41,25 +37,7 @@
   function onAddTimer() {
     showCreateEvent = true;
   }
-
-  function toggleGroupCollapse(group) {
-    groupCollapseState[group] =
-      groupCollapseState[group] === true ? false : true;
-  }
 </script>
-
-<style>
-  /* purgecss start ignore */
-  .group .group__chevron {
-    transform: none;
-    transition: transform 0.4s;
-  }
-
-  .group .group__chevron--down {
-    transform: rotate(180deg);
-  }
-  /* purgecss end ignore */
-</style>
 
 <div class="w-full h-full">
 
@@ -88,45 +66,8 @@
       <EmptyState class="w-full flex-1" on:click={onAddTimer} />
     {:else}
       <div class="flex-1">
-        <!-- extract a component for group -->
         {#each Object.keys(groupedEvents) as group}
-          <div
-            class="group w-full md:max-w-md md:mx-auto rounded shadow
-            border-gray-400 my-4">
-            {#if group !== NoGroup}
-              <button
-                class="bg-gray-200 w-full p-4 flex flex-row items-center
-                group__name"
-                on:click={() => toggleGroupCollapse(group)}>
-                <p class="flex-1">{group}</p>
-                <span
-                  class="group__chevron {groupCollapseState[group] ? 'group__chevron--down' : ''}">
-                  <ChevronDown />
-                </span>
-              </button>
-            {/if}
-
-            {#if !groupCollapseState[group]}
-              <div class="pt-2 pb-1" in:fade out:fade>
-                {#each groupedEvents[group] as event}
-                  <div class="w-full text-center mb-8">
-                    <TimeCounter
-                      class="bg-gray-200 border border-gray-400 rounded
-                      shadow-md"
-                      positiveClass="text-gray-900"
-                      negativeClass="text-gray-600"
-                      title={event.name}
-                      date={moment(event.date).local()} />
-                  </div>
-                {/each}
-              </div>
-            {:else}
-              <p class="text-xs text-center p-2">
-                <strong>{groupedEvents[group].length}</strong>
-                timers hidden
-              </p>
-            {/if}
-          </div>
+          <EventsGroup group={groupedEvents[group]} />
         {/each}
 
       </div>
