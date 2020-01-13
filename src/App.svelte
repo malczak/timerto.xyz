@@ -49,6 +49,7 @@
 </script>
 
 <style>
+  /* purgecss start ignore */
   .group .group__chevron {
     transform: none;
     transition: transform 0.4s;
@@ -57,6 +58,7 @@
   .group .group__chevron--down {
     transform: rotate(180deg);
   }
+  /* purgecss end ignore */
 </style>
 
 <div class="w-full h-full">

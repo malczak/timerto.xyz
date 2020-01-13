@@ -13,7 +13,15 @@ console.log(`🏗  Building' for '${mode}'`);
 const purgecss = new Purgecss({
   content: [`./**/*.svelte`],
   rejected: true,
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || []
+  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+  extractors: [
+    {
+      extractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+      extensions: ["svelte"]
+    }
+  ],
+  whitelistPatterns: [/svelte-.*$/gi],
+  whitelistPatternsChildren: [/svelte-.*$/gi]
 });
 
 module.exports = {
@@ -78,7 +86,14 @@ module.exports = {
               plugins: [
                 require("tailwindcss"),
                 require("autoprefixer"),
-                ...(prod ? [purgecss] : [])
+                ...(prod
+                  ? [
+                      purgecss,
+                      require("postcss-reporter")({
+                        filter: m => m.text.indexOf("svelte") !== -1
+                      })
+                    ]
+                  : [])
               ]
             }
           }

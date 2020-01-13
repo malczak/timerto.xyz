@@ -13,6 +13,7 @@
     "now": "^16.7.3",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
+    "postcss-reporter": "^6.0.1",
     "serve": "^11.0.0",
     "style-loader": "^0.23.1",
     "svelte": "^3.0.0",
