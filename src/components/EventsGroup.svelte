@@ -47,6 +47,7 @@
     padding: 1em 0;
   }
 
+  .eventtimer:active .eventtimer__actions,
   .eventtimer:hover .eventtimer__actions {
     display: inline;
   }
