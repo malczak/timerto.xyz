@@ -88,11 +88,15 @@
       <EmptyState class="w-full flex-1" on:click={onAddTimer} />
     {:else}
       <div class="flex-1">
+        <!-- extract a component for group -->
         {#each Object.keys(groupedEvents) as group}
-          <div class="group">
+          <div
+            class="group w-full md:max-w-md md:mx-auto rounded shadow
+            border-gray-400 my-4">
             {#if group !== NoGroup}
               <button
-                class="w-full py-4 flex flex-row items-center group__name"
+                class="bg-gray-200 w-full p-4 flex flex-row items-center
+                group__name"
                 on:click={() => toggleGroupCollapse(group)}>
                 <p class="flex-1">{group}</p>
                 <span
@@ -103,9 +107,9 @@
             {/if}
 
             {#if !groupCollapseState[group]}
-              <div in:fade out:fade>
+              <div class="pt-2 pb-1" in:fade out:fade>
                 {#each groupedEvents[group] as event}
-                  <div class="w-full text-center my-8">
+                  <div class="w-full text-center mb-8">
                     <TimeCounter
                       class="bg-gray-200 border border-gray-400 rounded
                       shadow-md"
@@ -116,6 +120,11 @@
                   </div>
                 {/each}
               </div>
+            {:else}
+              <p class="text-xs text-center p-2">
+                <strong>{groupedEvents[group].length}</strong>
+                timers hidden
+              </p>
             {/if}
           </div>
         {/each}
