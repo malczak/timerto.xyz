@@ -22,9 +22,12 @@
   // -----------------------
   // Internal
   // -----------------------
-  let showCreateEvent = false;
+
+  let showEventForm = false;
+  let eventToEdit = null;
   let groupCollapseState = {};
 
+  $: showEventForm = eventToEdit != null;
   $: hasEvents = $events.length !== 0;
   $: groupedEvents = $events.reduce((accum, event) => {
     const group = event.group || NoGroup;
@@ -35,7 +38,7 @@
   }, {});
 
   function onAddTimer() {
-    showCreateEvent = true;
+    showEventForm = true;
   }
 </script>
 
@@ -67,7 +70,10 @@
     {:else}
       <div class="flex-1">
         {#each Object.keys(groupedEvents) as group}
-          <EventsGroup group={groupedEvents[group]} />
+          <EventsGroup
+            group={groupedEvents[group]}
+            on:edit={e => (eventToEdit = e.detail.event)}
+            on:delete={e => events.remove(e.detail.event)} />
         {/each}
 
       </div>
@@ -75,14 +81,25 @@
 
   </div>
 
-  {#if showCreateEvent}
+  {#if showEventForm}
     <TimerEditor
+      event={eventToEdit}
       on:save={evt => {
-        if (events.add(evt.detail.event)) {
-          showCreateEvent = false;
+        let result = false;
+        if (eventToEdit) {
+          result = events.replace(eventToEdit, evt.detail.event);
+        } else {
+          result = events.add(evt.detail.event);
+        }
+        eventToEdit = null;
+        if (result) {
+          showEventForm = false;
         }
       }}
-      on:cancel={() => (showCreateEvent = false)} />
+      on:cancel={() => {
+        eventToEdit = null;
+        showEventForm = false;
+      }} />
   {/if}
 
 </div>

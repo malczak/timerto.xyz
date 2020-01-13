@@ -25,12 +25,22 @@
 
   let state = { day: 0, month: 0, year: 0 };
 
+  //   $: {
+  //     console.log("update from ", value);
+  //     updateDateFromValue(value.startOf("day"));
+  //   }
+
   function setState(newState, callback) {
     state = { ...state, ...newState };
     callback && callback(state);
   }
 
   function getDate() {
+    const { year, month, day } = state;
+    return moment.utc([year, month, day]);
+  }
+
+  function getDateInDay() {
     const { year, month, day } = state;
     const date = moment([year, month, day]);
     const now = moment();
@@ -123,7 +133,7 @@
   function onDateChange() {
     const m = getDate();
     if (isValid(m, m)) {
-      dispatcher("change", { date: m.toDate() });
+      dispatcher("change", { date: getDateInDay().toDate() });
     }
   }
 
@@ -141,14 +151,24 @@
     }));
   }
 
+  function updateDateFromValue(value) {
+    const m = moment(value);
+    if (m.isValid()) {
+      setState({ year: m.year(), month: m.month(), day: m.date() });
+    }
+  }
+
+  /*
+
+  NOTE this component need an update - it a mixture of managed and unmanaged
+
+  */
+
   // -----------------------
   // Lifecycle
   // -----------------------
   onMount(() => {
-    const m = moment.utc(value);
-    if (m.isValid()) {
-      setState({ year: m.year(), month: m.month(), day: m.date() });
-    }
+    updateDateFromValue(value);
   });
 </script>
 

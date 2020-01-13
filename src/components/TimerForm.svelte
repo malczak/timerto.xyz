@@ -1,7 +1,7 @@
 <script>
   import cn from "clsx";
   import moment from "moment";
-  import { createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import DatePicker from "./DatePicker.svelte";
   import GroupPicker from "./GroupPicker.svelte";
 
@@ -13,6 +13,7 @@
   let className;
   export let label;
   export let showCancel = true;
+  export let event = null;
   export { className as class };
 
   // -----------------------
@@ -22,7 +23,7 @@
 
   let name;
   let group = "";
-  let date = moment().utc();
+  let date = moment();
 
   $: isValid = name != null && name.length > 1 && date && date.isValid();
 
@@ -35,6 +36,17 @@
       dispatch("save", { event: { name, date, group } });
     }
   }
+
+  // -----------------------
+  // Lifecycle
+  // -----------------------
+  onMount(() => {
+    if (event) {
+      name = event.name;
+      group = event.group;
+      date = moment(event.date);
+    }
+  });
 </script>
 
 <div class={cn('profileform', 'flex flex-col', className)}>
@@ -67,7 +79,7 @@
       .add(80, 'year')
       .startOf('year')
       .toDate()}
-    value={moment.utc()}
+    value={date}
     on:change={evt => (date = moment.utc(evt.detail.date))} />
 
   <GroupPicker class="w-full px-3 mb-4" title="Group" bind:value={group} />

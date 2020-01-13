@@ -5,6 +5,11 @@
   import TimerForm from "../components/TimerForm.svelte";
 
   // -----------------------
+  // Properties
+  // -----------------------
+  export let event = null;
+
+  // -----------------------
   // Lifecycle
   // -----------------------
 
@@ -19,7 +24,8 @@
   <TimerForm
     class="bg-white m-4 py-2 w-full md:max-w-sm rounded overflow-hidden
     shadow-lg inline-block"
-    label={'Add counter'}
+    label={event ? 'Update event' : 'Add event'}
+    {event}
     on:save
     on:cancel />
 </div>

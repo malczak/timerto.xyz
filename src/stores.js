@@ -102,6 +102,20 @@ class EventsStore /* implements SvelteStore */ {
     return true;
   }
 
+  replace(event, newEvent) {
+    if (!isValidEvent(newEvent)) {
+      return false;
+    }
+
+    let index = this.events.indexOf(event);
+    if (index !== -1) {
+      this.events[index] = newEvent;
+      this.save();
+      this.notifyAll();
+    }
+    return true;
+  }
+
   remove(event) {
     const index = this.events.indexOf(event);
     if (index !== -1) {
