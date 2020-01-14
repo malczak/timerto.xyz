@@ -26,7 +26,7 @@
   let state = { day: 0, month: 0, year: 0 };
 
   // NOTE: without this state in not propagated with initial property value
-  $: updateDateFromValue(value.startOf("day"));
+  $: updateDateFromValue(value);
 
   function setState(change, callback) {
     const newState = { ...state, ...change };

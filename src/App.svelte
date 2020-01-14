@@ -13,6 +13,9 @@
 
   import { time } from "./stores.js";
 
+  import { isDev } from "app/utils/env";
+  import SvelteLogo from "app/components/icons/SvelteLogo.svelte";
+  import Github from "app/components/icons/Github.svelte";
   import TimerEditor from "app/views/TimerEditor.svelte";
   import EmptyState from "app/components/EmptyState.svelte";
   import EventsGroup, { NoGroup } from "app/components/EventsGroup";
@@ -42,6 +45,24 @@
   }
 </script>
 
+<style>
+  .footer .author {
+    border-bottom-width: 1px;
+    border-bottom-style: dotted;
+    margin-bottom: -1px;
+  }
+
+  .footer .logo {
+    display: inline-block;
+    width: 16px;
+    height: auto;
+  }
+
+  .footer .logo.github {
+    color: #181717;
+  }
+</style>
+
 <div class="w-full h-full">
 
   <div class="max-w-3xl mx-auto h-full pb-4 flex flex-col">
@@ -63,6 +84,21 @@
       {/if}
     </ul>
 
+    {#if isDev}
+      <button
+        class="inline-block border border-blue-500 rounded py-1 px-3 bg-blue-500
+        text-white"
+        on:click={() => {
+          events.add({
+            name: 'Random autoremovable',
+            date: moment().add(5, 'seconds'),
+            autoremove: true
+          });
+        }}>
+        Add expiring timer
+      </button>
+    {/if}
+
     {#if !hasEvents}
       <EmptyState class="w-full" on:click={onAddTimer} />
     {:else}
@@ -73,7 +109,29 @@
             on:edit={e => (eventToEdit = e.detail.event)}
             on:delete={e => events.remove(e.detail.event)} />
         {/each}
-
+      </div>
+      <div
+        class="footer flex flex-row items-center justify-center text-xs mt-4
+        pb-2">
+        Made with
+        <div class="logo svelte mx-2">
+          <a href="https://svelte.dev" title="Svelte" target="_blank">
+            <SvelteLogo />
+          </a>
+        </div>
+        and available on
+        <div class="logo github mx-2">
+          <a href="https://github.com/malczak/timerto.xyz" target="_blank">
+            <Github />
+          </a>
+        </div>
+        by
+        <a
+          class="author ml-1 text-blue-500 border-blue-500"
+          href="https://malczak.info"
+          target="_blank">
+          Matt
+        </a>
       </div>
     {/if}
 

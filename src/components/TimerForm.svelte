@@ -4,6 +4,7 @@
   import { onMount, createEventDispatcher } from "svelte";
   import DatePicker from "./DatePicker.svelte";
   import GroupPicker from "./GroupPicker.svelte";
+  import Switch from "./Switch.svelte";
 
   // NOTE: all dates are in UTC
 
@@ -14,6 +15,7 @@
   export let label;
   export let showCancel = true;
   export let event = null;
+  export let autoremove = false;
   export { className as class };
 
   // -----------------------
@@ -26,6 +28,12 @@
   let date = moment();
 
   $: isValid = name != null && name.length > 1 && date && date.isValid();
+  $: inFuture = date && date.isAfter(moment().endOf("day"));
+
+  function updateDate(newDate) {
+    const $date = moment(newDate);
+    date = $date;
+  }
 
   // -----------------------
   // Handlers
@@ -49,8 +57,8 @@
   });
 </script>
 
-<div class={cn('profileform', 'flex flex-col', className)}>
-  <div class="w-full px-3 mb-4">
+<div class={cn('profileform', 'flex flex-col px-3', className)}>
+  <div class="w-full mb-4">
     <label
       class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
       htmlFor="input-event-name">
@@ -67,7 +75,7 @@
   </div>
 
   <DatePicker
-    class="w-full px-3 mb-4"
+    class="w-full mb-4"
     title="Birthdate"
     minDate={moment
       .utc()
@@ -80,9 +88,20 @@
       .startOf('year')
       .toDate()}
     value={date}
-    on:change={evt => (date = moment.utc(evt.detail.date))} />
+    on:change={evt => updateDate(evt.detail.date)} />
 
-  <GroupPicker class="w-full px-3 mb-4" title="Group" bind:value={group} />
+  <GroupPicker class="w-full mb-4" title="Group" bind:value={group} />
+
+  {#if inFuture}
+    <div class="flex flex-row items-center justify-center mb-4">
+      <label
+        class="block flex-1 uppercase tracking-wide text-gray-700 text-xs
+        font-bold mb-2">
+        Autoremove
+      </label>
+      <Switch bind:checked={autoremove} />
+    </div>
+  {/if}
 
   <div class="relative inline-block text-center">
     <button

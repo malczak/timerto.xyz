@@ -18,6 +18,7 @@
   export let negativeClass;
   export let title = null;
   export let date = null;
+  export let onUpdate = null;
 
   // -----------------------
   // Internal
@@ -58,12 +59,16 @@
         newDuration.seconds()
       ];
 
-      while (components.length && components[0] == 0) components.shift();
+      while (components.length > 1 && components[0] == 0) components.shift();
       validComponentsCount = components.length;
       const validComponentOffset = stores.length - validComponentsCount;
 
       for (let i = 0; i < validComponentsCount; i += 1) {
         stores[validComponentOffset + i].set(components[i]);
+      }
+
+      if (typeof onUpdate === "function") {
+        onUpdate(now, date, inFuture, components, validComponentsCount);
       }
     });
     return () => unsunscribe();
@@ -80,6 +85,7 @@
       <p class="my-1 inline-block text-sm">{moment(date).format('L')}</p>
     </div>
 
+    <!-- NOTE: probably should be split into separate svelte files -->
     {#if date}
       <div class={`${className} ${inFuture ? positiveClass : negativeClass}`}>
         {#if validComponentsCount === 6}
@@ -140,7 +146,7 @@
               style={{ 'font-size': '1.2em' }} />
             <Item value={duration.seconds} label="seconds" />
           </Group>
-        {:else if validComponentsCount === 1}
+        {:else}
           <Group type="h">
             <Item
               value={duration.seconds}

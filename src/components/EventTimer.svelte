@@ -46,6 +46,13 @@
     dispatcher(name, { event });
     hideActions();
   }
+
+  function onTimerUpdate(_1, _2, inFuture, _3, validComponentsCount) {
+    if (event.autoremove === true && inFuture && validComponentsCount === 0) {
+      /* TODO: expire timer */
+      console.log("EXPIRED", event);
+    }
+  }
 </script>
 
 <style>
@@ -90,6 +97,7 @@
     negativeClass="text-gray-600"
     title={event.name}
     date={moment(event.date).local()}
+    onUpdate={onTimerUpdate}
     let:inFuture
     on:click={clickHandler}>
     on:touchstart={clickHandler}>

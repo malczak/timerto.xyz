@@ -1,5 +1,7 @@
 import { readable } from "svelte/store";
 import moment from "moment";
+import { isDev } from "app/utils/env";
+import { serialize, deserialize } from "app/utils/serialization";
 
 // -----------------------
 // Readonly time store
@@ -24,28 +26,6 @@ const isValidEvent = event =>
   (moment.isDate(event.date) ||
     (moment.isMoment(event.date) && event.date.isValid()));
 
-const serialize = events => {
-  return JSON.stringify({
-    v: 1,
-    e: events.map(event => ({
-      n: event.name,
-      t: moment.utc(event.date).unix(),
-      ...(event.group && { g: event.group })
-    }))
-  });
-};
-
-const deserialize = data => {
-  const { v, e: events } = JSON.parse(data);
-  if (v == EventsStore.version) {
-    return events.map(e => ({
-      name: e.n,
-      date: moment.unix(e.t).utc(),
-      ...(e.g && { group: e.g })
-    }));
-  }
-};
-
 function storage(key) {
   const storage = window.localStorage;
   return {
@@ -58,10 +38,6 @@ function storage(key) {
 const eventsStorage = storage("events");
 
 class EventsStore /* implements SvelteStore */ {
-  static get version() {
-    return 1;
-  }
-
   constructor() {
     this.events = [];
     this.subscriptions = [];
@@ -79,8 +55,12 @@ class EventsStore /* implements SvelteStore */ {
         this.events = [...events];
         this.notifyAll();
       } catch (e) {
-        eventsStorage.clear();
-        /* die silently */
+        if (isDev) {
+          console.error(e);
+        } else {
+          /* die silently */
+          eventsStorage.clear();
+        }
       }
     }
   }
