@@ -8,6 +8,7 @@
 
 /* global magick */
 
+/* purgecss start ignore */
 html {
     -webkit-text-size-adjust: none;
     touch-action: manipulation;
@@ -27,3 +28,4 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+/* purgecss end ignore */

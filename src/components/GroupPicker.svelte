@@ -16,7 +16,7 @@
   let className;
   export { className as class };
   export let title;
-  export let value = noGroupOption.value;
+  export let value = null;
 
   // -----------------------
   // Internal
@@ -26,7 +26,7 @@
   let groups = [];
 
   function onGroupSelected(group) {
-    value = "";
+    value = null;
 
     if (group === createGroupOption.value) {
       isCreatingNewGroup = true;
@@ -56,14 +56,13 @@
 
   function cancelCreateGroup() {
     isCreatingNewGroup = false;
-    value = noGroupOption.value;
+    value = null;
   }
 
   // -----------------------
   // Lifecycle
   // -----------------------
   onMount(() => {
-    value = value || noGroupOption.value;
     return events.subscribe(events => {
       const groupsSet = events.reduce(
         (accum, event) => (event.group ? accum.add(event.group) : accum),
@@ -87,7 +86,7 @@
         id="group-input"
         class="relative w-7/12"
         options={mapGroupsToOptions(groups)}
-        selectedValue={value}
+        selectedValue={value || noGroupOption.value}
         on:change={evt => onGroupSelected(evt.target.value)} />
     {:else}
       <div class="flex flex-row w-full items-center">

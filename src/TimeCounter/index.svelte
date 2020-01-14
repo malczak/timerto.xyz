@@ -70,9 +70,10 @@
   });
 </script>
 
-<div>
+<div on:click on:touchdown>
   <div class="counter counter--{validComponentsCount}">
     <div class="flex adjust-end items-center">
+      <slot name="action" {inFuture} />
       {#if title}
         <p class="flex-1 my-1 text-lg">{title}</p>
       {/if}

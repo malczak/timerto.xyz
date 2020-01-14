@@ -25,14 +25,22 @@
 
   let state = { day: 0, month: 0, year: 0 };
 
-  //   $: {
-  //     console.log("update from ", value);
-  //     updateDateFromValue(value.startOf("day"));
-  //   }
+  // NOTE: without this state in not propagated with initial property value
+  $: updateDateFromValue(value.startOf("day"));
 
-  function setState(newState, callback) {
-    state = { ...state, ...newState };
-    callback && callback(state);
+  function setState(change, callback) {
+    const newState = { ...state, ...change };
+
+    // NOTE: this component need an update - it a mixture of managed and unmanaged
+    // only if there are any changes
+    const changed = Object.keys(state).reduce((changed, key) => {
+      return changed || state[key] !== newState[key];
+    }, false);
+
+    if (changed) {
+      state = newState;
+      callback && callback(state);
+    }
   }
 
   function getDate() {
@@ -69,7 +77,7 @@
     );
   }
 
-  function getValidMonths(state) {
+  function getValidMonths() {
     let months = moment.months(true);
     const { year } = state;
     if (year) {
@@ -86,7 +94,7 @@
     return months;
   }
 
-  function getValidDays(state) {
+  function getValidDays() {
     const days = new Array(32).fill(0).map((_, index) => index + 1);
     const { year, month } = state;
     if (year && month != null) {
@@ -158,16 +166,11 @@
     }
   }
 
-  /*
-
-  NOTE this component need an update - it a mixture of managed and unmanaged
-
-  */
-
   // -----------------------
   // Lifecycle
   // -----------------------
   onMount(() => {
+    console.log(value);
     updateDateFromValue(value);
   });
 </script>

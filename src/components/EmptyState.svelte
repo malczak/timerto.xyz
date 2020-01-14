@@ -19,7 +19,8 @@
 </script>
 
 <div
-  class="flex flex-col justify-center items-center content-center {className}">
+  class="flex flex-col justify-center items-center content-center
+  overflow-scroll {className}">
   <h1 class="text-3xl mb-4">You don't have any events</h1>
   <img class="w-1/2 mx-auto" src={empty} alt="Empty state" />
   <div class="w-full text-center my-8">
