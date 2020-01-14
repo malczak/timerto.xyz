@@ -170,7 +170,6 @@
   // Lifecycle
   // -----------------------
   onMount(() => {
-    console.log(value);
     updateDateFromValue(value);
   });
 </script>

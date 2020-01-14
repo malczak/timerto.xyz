@@ -59,7 +59,10 @@
         {/each}
       </div>
     {:else}
-      <p class="text-xs text-center p-2">
+      <p
+        class="text-xs text-center p-2"
+        in:fade={{ duration: 200 }}
+        out:fade={{ duration: 200 }}>
         <strong>{group.events.length}</strong>
         timers hidden
       </p>

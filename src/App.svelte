@@ -48,9 +48,7 @@
 
     <ul class="flex py-4">
       <li class="mr-3">
-        <span class="inline-block py-1 px-3 text-gray-400 cursor-not-allowed">
-          Timer to XYZ
-        </span>
+        <span class="inline-block py-1 px-3 text-gray-400">Timer to XYZ</span>
       </li>
       <li class="flex-1" />
       {#if hasEvents}
@@ -66,7 +64,7 @@
     </ul>
 
     {#if !hasEvents}
-      <EmptyState class="w-full flex-1" on:click={onAddTimer} />
+      <EmptyState class="w-full" on:click={onAddTimer} />
     {:else}
       <div class="flex-1">
         {#each Object.keys(groupedEvents) as group}

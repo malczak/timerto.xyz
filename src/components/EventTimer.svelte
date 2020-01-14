@@ -10,6 +10,7 @@
   // Properties
   // -----------------------
   export let event;
+  export let editable = true;
 
   // -----------------------
   // Internal
@@ -82,6 +83,7 @@
   bind:this={_element}
   class="eventtimer relative w-full text-center mb-8 {device.isDesktop ? 'useHover' : ''}"
   class:hover={showActions}>
+
   <TimeCounter
     class="bg-gray-200 border border-gray-400 rounded shadow-md"
     positiveClass="text-gray-900"
@@ -100,18 +102,22 @@
       <ArrowLeft />
     </div>
   </TimeCounter>
-  <div class="eventtimer__actions">
-    <button
-      class="bg-white text-xs hover:bg-blue-500 text-blue-700 hover:text-white
-      py-1 px-2 border border-blue-500 hover:border-transparent rounded"
-      on:click={() => dispatch('edit')}>
-      edit
-    </button>
-    <button
-      class="bg-white text-xs hover:bg-red-500 text-red-700 hover:text-white
-      py-1 px-2 border border-red-500 hover:border-transparent rounded"
-      on:click={() => dispatch('delete')}>
-      delete
-    </button>
-  </div>
+
+  {#if editable}
+    <div class="eventtimer__actions">
+      <button
+        class="bg-white text-xs hover:bg-blue-500 text-blue-700 hover:text-white
+        py-1 px-2 border border-blue-500 hover:border-transparent rounded"
+        on:click={() => dispatch('edit')}>
+        edit
+      </button>
+      <button
+        class="bg-white text-xs hover:bg-red-500 text-red-700 hover:text-white
+        py-1 px-2 border border-red-500 hover:border-transparent rounded"
+        on:click={() => dispatch('delete')}>
+        delete
+      </button>
+    </div>
+  {/if}
+
 </div>

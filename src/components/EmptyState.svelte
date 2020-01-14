@@ -2,7 +2,7 @@
   import moment from "moment";
   import empty from "app/assets/empty.svg";
 
-  import TimeCounter from "app/TimeCounter/index.svelte";
+  import EventTimer from "app/components/EventTimer";
   import Timoji from "app/components/Timoji.svelte";
 
   // -----------------------
@@ -13,21 +13,20 @@
 
   const now = moment();
   let sampleEvent = {
-    name: `Sample event - 🎉 End of ${now.year()}`,
+    name: `🎉 End of ${now.year()}`,
     date: now.endOf("year")
   };
 </script>
 
 <div
-  class="flex flex-col justify-center items-center content-center
-  overflow-scroll {className}">
-  <h1 class="text-3xl mb-4">You don't have any events</h1>
+  class="flex flex-col justify-center items-center content-center {className}">
+  <h1 class="text-2xl mb-4 text-center">You don't have any events</h1>
   <img class="w-1/2 mx-auto" src={empty} alt="Empty state" />
   <div class="w-full text-center my-8">
-    <TimeCounter
+    <EventTimer
       class="bg-white rounded shadow-xl"
-      title={sampleEvent.name}
-      date={sampleEvent.date} />
+      editable={false}
+      event={sampleEvent} />
   </div>
   <button
     class="flex items-center bg-blue-500 hover:bg-blue-700 text-white text-lg
