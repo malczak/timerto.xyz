@@ -1,5 +1,4 @@
 <script>
-  import cn from "clsx";
   import moment from "moment";
   import { onMount, createEventDispatcher } from "svelte";
   import Dropdown from "./Dropdown.svelte";
@@ -174,7 +173,7 @@
   });
 </script>
 
-<div class={cn('datepicker', className)}>
+<div class="datepicker {className}">
   <label
     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
     htmlFor="date-picker">

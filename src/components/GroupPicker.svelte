@@ -1,5 +1,4 @@
 <script>
-  import cn from "clsx";
   import { onMount, tick } from "svelte";
 
   import { events } from "app/stores";
@@ -73,7 +72,7 @@
   });
 </script>
 
-<div class={cn('grouppicker', className)}>
+<div class="grouppicker {className}">
   <div class="flex flex-row items-center justify-center">
     <label
       class="block uppercase tracking-wide text-gray-700 text-xs font-bold

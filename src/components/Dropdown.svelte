@@ -1,6 +1,4 @@
 <script>
-  import cn from "clsx";
-
   // -----------------------
   // Properties
   // -----------------------
@@ -11,7 +9,7 @@
   export let selectedValue;
 </script>
 
-<div {id} class={cn('dropdown relative', className)}>
+<div {id} class="dropdown relative {className}">
   <select
     class="block text-s appearance-none w-full bg-gray-200 border
     border-gray-200 text-gray-700 py-3 px-3 rounded leading-tight

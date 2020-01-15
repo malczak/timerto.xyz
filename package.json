@@ -29,7 +29,6 @@
     "dev": "webpack-dev-server --content-base public"
   },
   "dependencies": {
-    "clsx": "^1.0.4",
     "moment": "^2.24.0"
   },
   "browserslist": {

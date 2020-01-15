@@ -4,6 +4,7 @@
 
   import ArrowLeft from "app/components/icons/ArrowLeft.svelte";
   import TimeCounter from "app/TimeCounter";
+  import DateDisplay from "app/TimeCounter/DateDisplay";
   import device from "app/utils/device";
 
   // -----------------------
@@ -19,6 +20,11 @@
   const dispatcher = createEventDispatcher();
   let _element;
   let showActions; /* used on mobile */
+  let expired = false;
+
+  $: {
+    expired = hasEventExpired(event);
+  }
 
   const clickHandler = device.isMobile
     ? () => (showActions = !showActions)
@@ -47,11 +53,12 @@
     hideActions();
   }
 
-  function onTimerUpdate(_1, _2, inFuture, _3, validComponentsCount) {
-    if (event.autoremove === true && inFuture && validComponentsCount === 0) {
-      /* TODO: expire timer */
-      console.log("EXPIRED", event);
-    }
+  function hasEventExpired(event) {
+    return event.autoremove && !moment(event.date).isAfter(moment());
+  }
+
+  function onTimerUpdate() {
+    expired = hasEventExpired(event);
   }
 </script>
 
@@ -91,25 +98,34 @@
   class="eventtimer relative w-full text-center mb-8 {device.isDesktop ? 'useHover' : ''}"
   class:hover={showActions}>
 
-  <TimeCounter
-    class="bg-gray-200 border border-gray-400 rounded shadow-md"
-    positiveClass="text-gray-900"
-    negativeClass="text-gray-600"
-    title={event.name}
-    date={moment(event.date).local()}
-    onUpdate={onTimerUpdate}
-    let:inFuture
-    on:click={clickHandler}>
-    on:touchstart={clickHandler}>
-    <div
-      class="pl-1 xs"
-      slot="action"
-      class:flip={inFuture}
-      class:text-gray-600={inFuture}
-      class:text-gray-400={!inFuture}>
-      <ArrowLeft />
-    </div>
-  </TimeCounter>
+  {#if !expired}
+    <TimeCounter
+      class="bg-gray-200 border border-gray-400 rounded shadow-md"
+      positiveClass="text-gray-900"
+      negativeClass="text-gray-600"
+      title={event.name}
+      date={moment(event.date).local()}
+      onUpdate={onTimerUpdate}
+      let:inFuture
+      on:click={clickHandler}>
+      on:touchstart={clickHandler}>
+      <div
+        class="pl-1 xs"
+        slot="action"
+        class:flip={inFuture}
+        class:text-gray-600={inFuture}
+        class:text-gray-400={!inFuture}>
+        <ArrowLeft />
+      </div>
+    </TimeCounter>
+  {:else}
+    <DateDisplay
+      class="bg-green-200 border border-green-400 rounded shadow-md"
+      title={event.name}
+      date={moment(event.date)}>
+      <p class="pt-2 text-red-500 font-bold">Completed!</p>
+    </DateDisplay>
+  {/if}
 
   {#if editable}
     <div class="eventtimer__actions">
@@ -127,5 +143,4 @@
       </button>
     </div>
   {/if}
-
 </div>

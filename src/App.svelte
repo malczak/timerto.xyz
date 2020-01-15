@@ -7,7 +7,6 @@
   import moment from "moment";
   import { onMount } from "svelte";
 
-  import "moment/locale/pl";
   import "./styles/index.less";
   import "./styles/tailwind.css";
 
@@ -15,11 +14,13 @@
 
   import { isDev } from "app/utils/env";
   import SvelteLogo from "app/components/icons/SvelteLogo.svelte";
+  import AppIcon from "app/components/icons/AppIcon.svelte";
   import Github from "app/components/icons/Github.svelte";
   import TimerEditor from "app/views/TimerEditor.svelte";
   import EmptyState from "app/components/EmptyState.svelte";
   import EventsGroup, { NoGroup } from "app/components/EventsGroup";
 
+  import "moment/locale/pl";
   moment.locale("pl");
 
   // -----------------------
@@ -34,9 +35,16 @@
   $: hasEvents = $events.length !== 0;
   $: groupedEvents = $events.reduce((accum, event) => {
     const group = event.group || NoGroup;
-    const groupEvents = accum[group] || { name: group, events: [] };
-    groupEvents.events.push(event);
-    accum[group] = groupEvents;
+    let data = accum[group];
+    if (!data) {
+      data = { name: group, events: [event] };
+    } else {
+      const events = data.events;
+      events.push(event);
+      events.sort((e1, e2) => (e1.date < e2.date ? -1 : 1));
+    }
+
+    accum[group] = data;
     return accum;
   }, {});
 
@@ -52,17 +60,21 @@
     margin-bottom: -1px;
   }
 
-  .footer .logo {
+  .logo {
     display: inline-block;
     width: 16px;
     height: auto;
   }
 
-  .footer .logo.svelte {
+  .logo.x2 {
+    width: 32px;
+  }
+
+  .logo.svelte {
     color: #ff3e00;
   }
 
-  .footer .logo.github {
+  .logo.github {
     color: #181717;
   }
 </style>
@@ -72,8 +84,11 @@
   <div class="max-w-3xl mx-auto h-full pb-4 flex flex-col">
 
     <ul class="flex py-4">
-      <li class="mr-3">
-        <span class="inline-block py-1 px-3 text-gray-400">Timer to XYZ</span>
+      <li class="logo x2 ml-3">
+        <AppIcon />
+      </li>
+      <li>
+        <span class="inline-block py-1 px-3 text-blue-500">Timer to XYZ</span>
       </li>
       <li class="flex-1" />
       {#if hasEvents}
@@ -95,7 +110,7 @@
         on:click={() => {
           events.add({
             name: 'Random autoremovable',
-            date: moment().add(5, 'seconds'),
+            date: moment().add(10, 'seconds'),
             autoremove: true
           });
         }}>

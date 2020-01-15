@@ -1,1 +1,2 @@
-export const toString = value => `00${Math.abs(value).toString()}`.substr(-2);
+export const toZeroPadddedString = value =>
+  `00${Math.abs(value).toString()}`.substr(-2);

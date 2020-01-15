@@ -33,44 +33,56 @@
   };
 
   const stores = Object.keys(duration).map(key => duration[key]);
+
   let inFuture = true;
   let validComponentsCount = 0;
   let unsunscribe;
 
+  $: {
+    timeTick(date);
+  }
+
+  // -----------------------
+  // Internal
+  // -----------------------
+  function timeTick(date, now) {
+    now = moment(now);
+    inFuture = date.isAfter(now);
+
+    let newDuration;
+    if (inFuture) {
+      newDuration = moment.duration(date.diff(now));
+    } else {
+      newDuration = moment.duration(now.diff(date));
+    }
+
+    const components = [
+      newDuration.years(),
+      newDuration.months(),
+      newDuration.days(),
+      newDuration.hours(),
+      newDuration.minutes(),
+      newDuration.seconds()
+    ];
+
+    while (components.length > 1 && components[0] == 0) components.shift();
+    validComponentsCount = components.length;
+    const validComponentOffset = stores.length - validComponentsCount;
+
+    for (let i = 0; i < validComponentsCount; i += 1) {
+      stores[validComponentOffset + i].set(components[i]);
+    }
+
+    if (typeof onUpdate === "function") {
+      onUpdate(now, date, inFuture, components, validComponentsCount);
+    }
+  }
+
+  // -----------------------
+  // Lifecycle
+  // -----------------------
   onMount(() => {
-    unsunscribe = time.subscribe(value => {
-      const now = moment(value);
-
-      inFuture = date.isAfter(now);
-
-      let newDuration;
-      if (inFuture) {
-        newDuration = moment.duration(date.diff(now));
-      } else {
-        newDuration = moment.duration(now.diff(date));
-      }
-
-      const components = [
-        newDuration.years(),
-        newDuration.months(),
-        newDuration.days(),
-        newDuration.hours(),
-        newDuration.minutes(),
-        newDuration.seconds()
-      ];
-
-      while (components.length > 1 && components[0] == 0) components.shift();
-      validComponentsCount = components.length;
-      const validComponentOffset = stores.length - validComponentsCount;
-
-      for (let i = 0; i < validComponentsCount; i += 1) {
-        stores[validComponentOffset + i].set(components[i]);
-      }
-
-      if (typeof onUpdate === "function") {
-        onUpdate(now, date, inFuture, components, validComponentsCount);
-      }
-    });
+    unsunscribe = time.subscribe(now => timeTick(date, now));
     return () => unsunscribe();
   });
 </script>

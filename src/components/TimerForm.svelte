@@ -1,10 +1,10 @@
 <script>
-  import cn from "clsx";
   import moment from "moment";
   import { onMount, createEventDispatcher } from "svelte";
   import DatePicker from "./DatePicker.svelte";
   import GroupPicker from "./GroupPicker.svelte";
   import Switch from "./Switch.svelte";
+  import { cn } from "app/utils/clsx";
 
   // NOTE: all dates are in UTC
 
@@ -41,7 +41,7 @@
 
   function onSave() {
     if (isValid) {
-      dispatch("save", { event: { name, date, group } });
+      dispatch("save", { event: { name, date, group, autoremove } });
     }
   }
 
@@ -53,11 +53,12 @@
       name = event.name;
       group = event.group;
       date = moment(event.date);
+      autoremove = event.autoremove === true;
     }
   });
 </script>
 
-<div class={cn('profileform', 'flex flex-col px-3', className)}>
+<div class="profileform flex flex-col px-3 {className}">
   <div class="w-full mb-4">
     <label
       class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
