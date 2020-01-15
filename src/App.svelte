@@ -58,6 +58,10 @@
     height: auto;
   }
 
+  .footer .logo.svelte {
+    color: #ff3e00;
+  }
+
   .footer .logo.github {
     color: #181717;
   }
@@ -112,7 +116,7 @@
       </div>
       <div
         class="footer flex flex-row items-center justify-center text-xs mt-4
-        pb-2">
+        pb-4">
         Made with
         <div class="logo svelte mx-2">
           <a href="https://svelte.dev" title="Svelte" target="_blank">
