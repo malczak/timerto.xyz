@@ -5,6 +5,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const Purgecss = require("@fullhuman/postcss-purgecss");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
@@ -24,7 +26,7 @@ const purgecss = new Purgecss({
   whitelistPatternsChildren: [/svelte-.*$/gi]
 });
 
-module.exports = {
+module.exports = (env = {}) => ({
   entry: {
     bundle: ["./src/main.js"]
   },
@@ -141,7 +143,8 @@ module.exports = {
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new MiniCssExtractPlugin({
       filename: "[name].css"
-    })
+    }),
+    ...(env.analyze === "true" ? [new BundleAnalyzerPlugin()] : [])
   ],
   devtool: prod ? false : "source-map"
-};
+});
