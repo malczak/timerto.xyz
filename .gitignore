@@ -41,6 +41,7 @@ Temporary Items
 ### Others ###
 node_modules
 public/bundle.*
+public/assets/**/*
 package-lock.json
 yarn.lock
 
