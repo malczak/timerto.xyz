@@ -22,7 +22,7 @@
   class="flex flex-col justify-center items-center content-center {className}">
   <h1 class="text-2xl mb-4 text-center">You don't have any events</h1>
   <img class="w-1/2 mx-auto" src={empty} alt="Empty state" />
-  <div class="w-full text-center my-8">
+  <div class="w-full text-center mt-4">
     <EventTimer
       class="bg-white rounded shadow-xl"
       editable={false}

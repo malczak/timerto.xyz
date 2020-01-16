@@ -47,7 +47,7 @@
   });
 </script>
 
-<div class="counter counter--3">
+<div class="counter counter--3" on:click on:touchstart>
   <div class="flex adjust-end items-center">
     <p class="flex-1 my-1 text-lg">{title}</p>
     <p class="my-1 inline-block text-sm">{date.format('L')}</p>

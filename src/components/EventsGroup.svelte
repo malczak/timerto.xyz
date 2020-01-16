@@ -4,6 +4,7 @@
 
 <script>
   import moment from "moment";
+  import { events } from "app/stores";
   import { fade } from "svelte/transition";
   import ChevronDown from "app/components/icons/ChevronDown.svelte";
   import EventTimer from "app/components/EventTimer";
@@ -14,12 +15,17 @@
   export let group;
   export let collapsed = false;
 
+  $: {
+    collapsed = events.isGroupCollapsed(group.name);
+  }
+
   // -----------------------
   // Internal
   // -----------------------
 
   function toggleGroupCollapse() {
     collapsed = !collapsed;
+    events.groupCollpse(group.name, collapsed);
   }
 </script>
 
@@ -36,11 +42,11 @@
 
 {#if group}
   <div
-    class="group w-full md:max-w-md md:mx-auto rounded shadow border-gray-400
-    my-4">
+    class="group w-full md:max-w-md md:mx-auto rounded border bg-white
+    border-gray-300 my-4">
     {#if group.name !== NoGroup}
       <button
-        class="bg-gray-200 w-full p-4 flex flex-row items-center group__name"
+        class="bg-gray-300 w-full p-4 flex flex-row items-center group__name"
         on:click={() => toggleGroupCollapse()}>
         <p class="flex-1">{group.name}</p>
         <span class="group__chevron {collapsed ? 'group__chevron--down' : ''}">

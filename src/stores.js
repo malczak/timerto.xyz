@@ -36,10 +36,12 @@ function storage(key) {
 }
 
 const eventsStorage = storage("events");
+const groupsStorage = storage("groups");
 
 class EventsStore /* implements SvelteStore */ {
   constructor() {
     this.events = [];
+    this.groupState = {};
     this.subscriptions = [];
   }
 
@@ -53,6 +55,15 @@ class EventsStore /* implements SvelteStore */ {
       try {
         const events = deserialize(data);
         this.events = [...events];
+
+        this.groupState = JSON.parse(groupsStorage.get() || "[]").reduce(
+          (state, group) => {
+            state[group] = true;
+            return state;
+          },
+          {}
+        );
+
         this.notifyAll();
       } catch (e) {
         if (isDev) {
@@ -63,6 +74,19 @@ class EventsStore /* implements SvelteStore */ {
         }
       }
     }
+  }
+
+  // NOTE: naive way but good at this point
+  groupCollpse(name, collapsed) {
+    this.groupState[name] = collapsed;
+    const collapsedGroups = Object.keys(this.groupState).filter(
+      group => this.groupState[group] === true
+    );
+    groupsStorage.set(JSON.stringify(collapsedGroups));
+  }
+
+  isGroupCollapsed(name) {
+    return this.groupState[name] === true;
   }
 
   save() {

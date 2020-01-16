@@ -54,6 +54,15 @@
 </script>
 
 <style>
+  .app {
+    width: 100%;
+    min-height: 100%;
+  }
+
+  .app > div {
+    min-height: 100%;
+  }
+
   .footer .author {
     border-bottom-width: 1px;
     border-bottom-style: dotted;
@@ -79,12 +88,12 @@
   }
 </style>
 
-<div class="w-full h-full">
+<div class="app h-full bg-gray-100 px-3">
 
-  <div class="max-w-3xl mx-auto h-full pb-4 flex flex-col">
+  <div class="max-w-3xl mx-auto flex flex-col">
 
     <ul class="flex py-4">
-      <li class="logo x2 ml-3">
+      <li class="logo x2">
         <AppIcon />
       </li>
       <li>
@@ -92,7 +101,7 @@
       </li>
       <li class="flex-1" />
       {#if hasEvents}
-        <li class="mr-3">
+        <li>
           <button
             class="inline-block border border-blue-500 rounded py-1 px-3
             bg-blue-500 text-white"
@@ -119,7 +128,7 @@
     {/if}
 
     {#if !hasEvents}
-      <EmptyState class="w-full" on:click={onAddTimer} />
+      <EmptyState class="flex-1 w-full" on:click={onAddTimer} />
     {:else}
       <div class="flex-1">
         {#each Object.keys(groupedEvents) as group}
@@ -129,31 +138,31 @@
             on:delete={e => events.remove(e.detail.event)} />
         {/each}
       </div>
-      <div
-        class="footer flex flex-row items-center justify-center text-xs mt-4
-        pb-4">
-        Made with
-        <div class="logo svelte mx-2">
-          <a href="https://svelte.dev" title="Svelte" target="_blank">
-            <SvelteLogo />
-          </a>
-        </div>
-        and available on
-        <div class="logo github mx-2">
-          <a href="https://github.com/malczak/timerto.xyz" target="_blank">
-            <Github />
-          </a>
-        </div>
-        by
-        <a
-          class="author ml-1 text-blue-500 border-blue-500"
-          href="https://malczak.info"
-          target="_blank">
-          Matt
-        </a>
-      </div>
     {/if}
 
+    <div
+      class="footer bg-gray-100 flex flex-row items-center justify-center
+      text-xs mt-4 pb-4">
+      Made with
+      <div class="logo svelte mx-2">
+        <a href="https://svelte.dev" title="Svelte" target="_blank">
+          <SvelteLogo />
+        </a>
+      </div>
+      and available on
+      <div class="logo github mx-2">
+        <a href="https://github.com/malczak/timerto.xyz" target="_blank">
+          <Github />
+        </a>
+      </div>
+      by
+      <a
+        class="author ml-1 text-blue-500 border-blue-500"
+        href="https://malczak.info"
+        target="_blank">
+        Matt
+      </a>
+    </div>
   </div>
 
   {#if showEventForm}

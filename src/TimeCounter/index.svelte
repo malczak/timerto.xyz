@@ -87,7 +87,7 @@
   });
 </script>
 
-<div on:click on:touchdown>
+<div on:click on:touchstart>
   <div class="counter counter--{validComponentsCount}">
     <div class="flex adjust-end items-center">
       <slot name="action" {inFuture} />

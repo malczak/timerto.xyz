@@ -26,9 +26,7 @@
     expired = hasEventExpired(event);
   }
 
-  const clickHandler = device.isMobile
-    ? () => (showActions = !showActions)
-    : () => {};
+  const clickHandler = device.isMobile ? () => (showActions = true) : () => {};
 
   function hideActions() {
     device.isMobile && (showActions = false);
@@ -89,9 +87,7 @@
   }
 </style>
 
-<svelte:window
-  on:click|capture={globalHideHandler}
-  on:touchstart|capture={globalHideHandler} />
+<svelte:window on:click|capture={globalHideHandler} />
 
 <div
   bind:this={_element}
@@ -100,7 +96,7 @@
 
   {#if !expired}
     <TimeCounter
-      class="bg-gray-200 border border-gray-400 rounded shadow-md"
+      class="bg-gray-200 border border-gray-300 rounded"
       positiveClass="text-gray-900"
       negativeClass="text-gray-600"
       title={event.name}
@@ -108,7 +104,6 @@
       onUpdate={onTimerUpdate}
       let:inFuture
       on:click={clickHandler}>
-      on:touchstart={clickHandler}>
       <div
         class="pl-1 xs"
         slot="action"
@@ -122,7 +117,8 @@
     <DateDisplay
       class="bg-green-200 border border-green-400 rounded shadow-md"
       title={event.name}
-      date={moment(event.date)}>
+      date={moment(event.date)}
+      on:click={clickHandler}>
       <p class="pt-2 text-red-500 font-bold">Completed!</p>
     </DateDisplay>
   {/if}
