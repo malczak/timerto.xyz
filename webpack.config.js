@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -139,6 +140,9 @@ module.exports = {
     : {},
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new CopyWebpackPlugin([
+      { from: path.resolve("node_modules", "moment", "locale"), to: "locale" }
+    ]),
     new MiniCssExtractPlugin({
       filename: "[name].css"
     })

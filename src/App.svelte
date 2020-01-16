@@ -1,10 +1,23 @@
 <script context="module">
+  import moment from "moment";
   import { events } from "./stores.js";
   events.load();
+
+  window.moment = moment;
+  //
+  console.log(" LOCALE", moment.locale());
+  var script = document.createElement("script");
+  script.onload = function() {
+    //do stuff with the script
+    console.log("LOADED LOCALE", moment.locale());
+    // moment.locale("pl");
+  };
+  script.src = "/locale/fr.js";
+
+  document.head.appendChild(script);
 </script>
 
 <script>
-  import moment from "moment";
   import { onMount } from "svelte";
 
   import "./styles/index.less";
@@ -21,8 +34,8 @@
   import EmptyState from "app/components/EmptyState.svelte";
   import EventsGroup, { NoGroup } from "app/components/EventsGroup";
 
-  import "moment/locale/pl";
-  moment.locale("pl");
+  //   import "moment/locale/pl";
+  //   moment.locale("pl");
 
   // -----------------------
   // Internal
@@ -49,7 +62,6 @@
 
     const nameCompareFnc = sortOnCompareFnc("name");
     const dateCompareFnc = sortOnCompareFnc("date");
-    console.log([...groupsMap.keys()]);
     groupedEvents = [...groupsMap.values()].sort(nameCompareFnc).map(group => {
       group.events.sort(dateCompareFnc);
       return group;
