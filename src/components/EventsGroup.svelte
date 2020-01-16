@@ -1,5 +1,5 @@
 <script context="module">
-  export const NoGroup = "@----@";
+  export const NoGroup = " @----@ ";
 </script>
 
 <script>

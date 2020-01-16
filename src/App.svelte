@@ -13,6 +13,7 @@
   import { time } from "./stores.js";
 
   import { isDev } from "app/utils/env";
+  import { sortOnCompareFnc } from "app/utils/array";
   import SvelteLogo from "app/components/icons/SvelteLogo.svelte";
   import AppIcon from "app/components/icons/AppIcon.svelte";
   import Github from "app/components/icons/Github.svelte";
@@ -46,8 +47,10 @@
       return map.set(groupName, data);
     }, new Map());
 
-    const dateCompareFnc = (e1, e2) => (e1.date < e2.date ? -1 : 1);
-    groupedEvents = [...groupsMap.values()].map(group => {
+    const nameCompareFnc = sortOnCompareFnc("name");
+    const dateCompareFnc = sortOnCompareFnc("date");
+    console.log([...groupsMap.keys()]);
+    groupedEvents = [...groupsMap.values()].sort(nameCompareFnc).map(group => {
       group.events.sort(dateCompareFnc);
       return group;
     });
