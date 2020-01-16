@@ -30,23 +30,28 @@
   let showEventForm = false;
   let eventToEdit = null;
   let groupCollapseState = {};
+  let groupedEvents = [];
 
   $: showEventForm = eventToEdit != null;
   $: hasEvents = $events.length !== 0;
-  $: groupedEvents = $events.reduce((accum, event) => {
-    const group = event.group || NoGroup;
-    let data = accum[group];
-    if (!data) {
-      data = { name: group, events: [event] };
-    } else {
-      const events = data.events;
-      events.push(event);
-      events.sort((e1, e2) => (e1.date < e2.date ? -1 : 1));
-    }
+  $: {
+    const groupsMap = $events.reduce((map, event) => {
+      const groupName = event.group || NoGroup;
+      let data = map.get(groupName);
+      if (!data) {
+        data = { name: groupName, events: [event] };
+      } else {
+        data.events.push(event);
+      }
+      return map.set(groupName, data);
+    }, new Map());
 
-    accum[group] = data;
-    return accum;
-  }, {});
+    const dateCompareFnc = (e1, e2) => (e1.date < e2.date ? -1 : 1);
+    groupedEvents = [...groupsMap.values()].map(group => {
+      group.events.sort(dateCompareFnc);
+      return group;
+    });
+  }
 
   function onAddTimer() {
     showEventForm = true;
@@ -131,9 +136,9 @@
       <EmptyState class="flex-1 w-full" on:click={onAddTimer} />
     {:else}
       <div class="flex-1">
-        {#each Object.keys(groupedEvents) as group}
+        {#each groupedEvents as group}
           <EventsGroup
-            group={groupedEvents[group]}
+            {group}
             on:edit={e => (eventToEdit = e.detail.event)}
             on:delete={e => events.remove(e.detail.event)} />
         {/each}
