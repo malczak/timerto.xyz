@@ -21,8 +21,8 @@
   import EmptyState from "app/components/EmptyState.svelte";
   import EventsGroup, { NoGroup } from "app/components/EventsGroup";
 
-  import "moment/locale/pl";
-  moment.locale("pl");
+  //   import "moment/locale/pl";
+  //   moment.locale("pl");
 
   // -----------------------
   // Internal
