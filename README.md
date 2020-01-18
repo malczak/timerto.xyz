@@ -11,6 +11,10 @@ Created to learn how [Svelte](https://svelte.dev) works... and it works great.
 Build with [svelte](https://svelte.dev), [moment](https://momentjs.com/),
 [tailwind](https://tailwindcss.com/) & [webpack](https://webpack.js.org/)
 
+Icons [feather icons](https://feathericons.com/)
+
+Illustrations by [unDraw](https://undraw.co/)
+
 **Limitations**
 
 - Application does take time into account.
