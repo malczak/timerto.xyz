@@ -1,12 +1,11 @@
 <script>
   import moment from "moment";
   import { onMount, createEventDispatcher } from "svelte";
-  import DatePicker from "./DatePicker.svelte";
-  import GroupPicker from "./GroupPicker.svelte";
-  import Switch from "./Switch.svelte";
+  import { readable } from "svelte/store";
+  import DatePicker from "app/components/DatePicker";
+  import GroupPicker from "app/components/GroupPicker";
+  import Switch from "app/components/Switch";
   import { cn } from "app/utils/clsx";
-
-  // NOTE: all dates are in UTC
 
   // -----------------------
   // Properties
@@ -25,16 +24,26 @@
 
   let name;
   let group = "";
-  let date = moment();
+  let date = "";
 
-  $: isValid = name != null && name.length > 1 && date && date.isValid();
-  $: inFuture = date && date.isAfter(moment().endOf("day"));
+  $: isValid = name != null && name.length > 1 && isValidDateLike(date);
+  $: inFuture =
+    date && moment.isMoment(date) && date.isAfter(moment().endOf("day"));
 
-  function updateDate(newDate) {
-    const $date = moment(newDate);
-    date = $date;
+  function isValidDateLike(date) {
+    if (date) {
+      if (typeof date === "string") {
+        const patternRe = /^(?:(?:[0-9]+|\*)\|){2}(?:[0-9]+|\*)$/;
+        return patternRe.test(date);
+      }
+    }
+    return false;
   }
 
+  function updateDate(newDate) {
+    console.log("update date", newDate);
+    date = newDate;
+  }
   // -----------------------
   // Handlers
   // -----------------------
@@ -52,7 +61,7 @@
     if (event) {
       name = event.name;
       group = event.group;
-      date = moment(event.date);
+      date = event.date;
       autoremove = event.autoremove === true;
     }
   });
@@ -63,7 +72,7 @@
     <label
       class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
       htmlFor="input-event-name">
-      Name
+      Event Name
     </label>
     <input
       class="appearance-none block w-full bg-gray-200 text-gray-700 border
@@ -76,19 +85,8 @@
   </div>
 
   <DatePicker
-    class="w-full mb-4"
-    title="Birthdate"
-    minDate={moment
-      .utc()
-      .subtract(80, 'year')
-      .startOf('year')
-      .toDate()}
-    maxDate={moment
-      .utc()
-      .add(80, 'year')
-      .startOf('year')
-      .toDate()}
-    value={date}
+    title="Event date"
+    {date}
     on:change={evt => updateDate(evt.detail.date)} />
 
   <GroupPicker class="w-full mb-4" title="Group" bind:value={group} />

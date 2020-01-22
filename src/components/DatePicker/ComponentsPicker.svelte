@@ -1,7 +1,14 @@
 <script>
   import moment from "moment";
   import { onMount, createEventDispatcher } from "svelte";
-  import Dropdown from "./Dropdown.svelte";
+  import Dropdown from "app/components/Dropdown.svelte";
+  import {
+    mapMonthsToOptions,
+    mapDaysToOptions,
+    getYearSpan,
+    getYears
+  } from "./helpers";
+  import { correctDate } from "app/utils/date";
 
   // -----------------------
   // Props
@@ -18,14 +25,14 @@
   // -----------------------
   const dispatcher = createEventDispatcher();
 
-  // -----------------------
-  // Methods
-  // -----------------------
-
   let state = { day: 0, month: 0, year: 0 };
 
   // NOTE: without this state in not propagated with initial property value
   $: updateDateFromValue(value);
+
+  // -----------------------
+  // Methods
+  // -----------------------
 
   function setState(change, callback) {
     const newState = { ...state, ...change };
@@ -37,7 +44,7 @@
     }, false);
 
     if (changed) {
-      state = newState;
+      state = correctDate(newState);
       callback && callback(state);
     }
   }
@@ -57,15 +64,8 @@
     ).utc();
   }
 
-  function getYearSpan() {
-    return {
-      min: moment.utc(minDate),
-      max: moment.utc(maxDate)
-    };
-  }
-
   function isValid(m1, m2, yearSpan = undefined) {
-    yearSpan = yearSpan || getYearSpan();
+    yearSpan = yearSpan || getYearSpan(minDate, maxDate);
     return (
       m1 &&
       m2 &&
@@ -76,11 +76,11 @@
     );
   }
 
-  function getValidMonths() {
+  function getValidMonths(state) {
     let months = moment.months(true);
     const { year } = state;
     if (year) {
-      const yearSpan = getYearSpan();
+      const yearSpan = getYearSpan(minDate, maxDate);
       return months.filter((_, index) => {
         let m = moment.utc([year, index, 1]);
         return isValid(
@@ -93,11 +93,11 @@
     return months;
   }
 
-  function getValidDays() {
+  function getValidDays(state) {
     const days = new Array(32).fill(0).map((_, index) => index + 1);
     const { year, month } = state;
     if (year && month != null) {
-      const yearSpan = getYearSpan();
+      const yearSpan = getYearSpan(minDate, maxDate);
       return days.filter(day => {
         let m = moment.utc([year, month, day]);
         return isValid(
@@ -110,13 +110,8 @@
     return days;
   }
 
-  function getYears() {
-    const yearSpan = getYearSpan();
-    const minYear = yearSpan.min.year();
-    return new Array(yearSpan.max.year() - yearSpan.min.year() + 1)
-      .fill(0)
-      .map((_, index) => minYear + index)
-      .map(year => year.toString());
+  function getValidYears() {
+    return getYears(minDate, maxDate);
   }
 
   function onYearChange() {
@@ -142,20 +137,6 @@
     if (isValid(m, m)) {
       dispatcher("change", { date: getDateInDay().toDate() });
     }
-  }
-
-  function mapMonthsToOptions(months) {
-    return months.map((month, index) => ({
-      label: month[0].toUpperCase() + month.substr(1),
-      value: index.toString()
-    }));
-  }
-
-  function mapDaysToOptions(days) {
-    return days.map(day => ({
-      label: day.toString(),
-      value: day.toString()
-    }));
   }
 
   function updateDateFromValue(value) {
@@ -194,7 +175,7 @@
 
     <Dropdown
       class="relative w-3/12"
-      options={getYears().map(year => ({ label: year, value: year }))}
+      options={getValidYears().map(year => ({ label: year, value: year }))}
       selectedValue={state.year.toString()}
       on:change={evt => setState({ year: parseInt(evt.target.value) }, onYearChange)} />
   </div>

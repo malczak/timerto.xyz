@@ -6,6 +6,7 @@
   import TimeCounter from "app/TimeCounter";
   import DateDisplay from "app/TimeCounter/DateDisplay";
   import device from "app/utils/device";
+  import { parseDate } from "app/utils/date";
 
   // -----------------------
   // Properties
@@ -21,9 +22,11 @@
   let _element;
   let showActions; /* used on mobile */
   let expired = false;
+  let date = "";
 
   $: {
     expired = hasEventExpired(event);
+    date = parseDate(event.date).local();
   }
 
   const clickHandler = device.isMobile ? () => (showActions = true) : () => {};
@@ -52,7 +55,7 @@
   }
 
   function hasEventExpired(event) {
-    return event.autoremove && !moment(event.date).isAfter(moment());
+    return event.autoremove && !moment(date).isAfter(moment());
   }
 
   function onTimerUpdate() {
@@ -100,7 +103,7 @@
       positiveClass="text-gray-900"
       negativeClass="text-gray-600"
       title={event.name}
-      date={moment(event.date).local()}
+      {date}
       onUpdate={onTimerUpdate}
       let:inFuture
       on:click={clickHandler}>
@@ -117,7 +120,7 @@
     <DateDisplay
       class="bg-green-200 border border-green-400 rounded shadow-md"
       title={event.name}
-      date={moment(event.date)}
+      {date}
       on:click={clickHandler}>
       <p class="pt-2 text-red-500 font-bold">Completed!</p>
     </DateDisplay>

@@ -1,6 +1,17 @@
 import moment from "moment";
+import { parseDate } from "app/utils/date";
 
-export const Version = 1;
+const Migrations = {
+  "1": {
+    "2": events =>
+      events.map(event => ({
+        ...event,
+        date: `${event.date.date()}|${event.date.month()}|${event.date.year()}`
+      }))
+  }
+};
+
+export const Version = 2;
 
 export const serialize = events => {
   const groups = [
@@ -22,12 +33,13 @@ export const serialize = events => {
 
 export const deserialize = data => {
   const { v, g: groups, e: events } = JSON.parse(data);
-  if (v == Version) {
-    return events.map(e => ({
+  const migration = v === Version ? events => events : Migrations[v][Version];
+  return migration(
+    events.map(e => ({
       name: e.n,
       date: moment.unix(e.t).utc(),
       ...(e.g != null && { group: groups[e.g] }),
       ...(e.a === true && { autoremove: true })
-    }));
-  }
+    }))
+  );
 };

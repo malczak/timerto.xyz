@@ -1,11 +1,24 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   // -----------------------
   // Properties
   // -----------------------
+  let className = "";
+  export { className as class };
+  export let disabled = false;
   export let checked = false;
 
+  // -----------------------
+  // Internal
+  // -----------------------
+  const dispatcher = createEventDispatcher();
+
   function toggleSwitch() {
+    if (disabled) {
+      return;
+    }
     checked = !checked;
+    dispatcher("change", { checked });
   }
 </script>
 
@@ -62,6 +75,10 @@
     box-shadow: 0 0 1px #4299e1;
   }
 
+  input:disabled + .slider {
+    background-color: #e1e1e1;
+  }
+
   input:checked + .slider:before {
     -webkit-transform: translateX(13px);
     -ms-transform: translateX(13px);
@@ -88,9 +105,9 @@
   }
 </style>
 
-<div class="switch relative" on:mousedown={() => toggleSwitch()}>
+<div class="switch relative {className}" on:mousedown={() => toggleSwitch()}>
   <label class="wrap">
-    <input type="checkbox" bind:checked readOnly={true} />
+    <input type="checkbox" bind:checked readOnly={true} {disabled} />
     <span class="slider round" />
   </label>
   <div class="switchBlocker" />

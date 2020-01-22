@@ -5,7 +5,6 @@
 
 <script>
   import moment from "moment";
-  import { onMount } from "svelte";
 
   import "./styles/index.less";
   import "./styles/tailwind.css";
@@ -49,7 +48,6 @@
 
     const nameCompareFnc = sortOnCompareFnc("name");
     const dateCompareFnc = sortOnCompareFnc("date");
-    console.log([...groupsMap.keys()]);
     groupedEvents = [...groupsMap.values()].sort(nameCompareFnc).map(group => {
       group.events.sort(dateCompareFnc);
       return group;
