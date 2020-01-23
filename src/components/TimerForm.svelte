@@ -77,7 +77,7 @@
 
   <DatePicker
     class="w-full mb-4"
-    title="Birthdate"
+    title="Event date"
     minDate={moment
       .utc()
       .subtract(80, 'year')
