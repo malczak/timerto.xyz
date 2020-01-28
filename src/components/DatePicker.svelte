@@ -159,8 +159,10 @@
   }
 
   function updateDateFromValue(value) {
-    const m = moment(value);
+    let m = moment(value);
     if (m.isValid()) {
+      // NOTE: we use dates in UTC but lest display in local time
+      m = m.local();
       setState({ year: m.year(), month: m.month(), day: m.date() });
     }
   }

@@ -76,11 +76,7 @@
 <style>
   .app {
     width: 100%;
-    min-height: 100%;
-  }
-
-  .app > div {
-    min-height: 100%;
+    /* min-height: 100%; */
   }
 
   .footer .author {
@@ -108,7 +104,7 @@
   }
 </style>
 
-<div class="app h-full bg-gray-100 px-3">
+<div class="app flex-1 bg-gray-100 px-3">
 
   <div class="max-w-3xl mx-auto flex flex-col">
 
@@ -160,50 +156,51 @@
       </div>
     {/if}
 
-    <div
-      class="footer bg-gray-100 flex flex-row items-center justify-center
-      text-xs mt-4 pb-4">
-      Made with
-      <div class="logo svelte mx-2">
-        <a href="https://svelte.dev" title="Svelte" target="_blank">
-          <SvelteLogo />
-        </a>
-      </div>
-      and available on
-      <div class="logo github mx-2">
-        <a href="https://github.com/malczak/timerto.xyz" target="_blank">
-          <Github />
-        </a>
-      </div>
-      by
-      <a
-        class="author ml-1 text-blue-500 border-blue-500"
-        href="https://malczak.info"
-        target="_blank">
-        Matt
-      </a>
-    </div>
   </div>
 
-  {#if showEventForm}
-    <TimerEditor
-      event={eventToEdit}
-      on:save={evt => {
-        let result = false;
-        if (eventToEdit) {
-          result = events.replace(eventToEdit, evt.detail.event);
-        } else {
-          result = events.add(evt.detail.event);
-        }
-        eventToEdit = null;
-        if (result) {
-          showEventForm = false;
-        }
-      }}
-      on:cancel={() => {
-        eventToEdit = null;
-        showEventForm = false;
-      }} />
-  {/if}
-
 </div>
+
+<div
+  class="footer bg-gray-100 flex-shrink-0 flex flex-row items-center
+  justify-center text-xs py-4">
+  Made with
+  <div class="logo svelte mx-2">
+    <a href="https://svelte.dev" title="Svelte" target="_blank">
+      <SvelteLogo />
+    </a>
+  </div>
+  and available on
+  <div class="logo github mx-2">
+    <a href="https://github.com/malczak/timerto.xyz" target="_blank">
+      <Github />
+    </a>
+  </div>
+  by
+  <a
+    class="author ml-1 text-blue-500 border-blue-500"
+    href="https://malczak.info"
+    target="_blank">
+    Matt
+  </a>
+</div>
+
+{#if showEventForm}
+  <TimerEditor
+    event={eventToEdit}
+    on:save={evt => {
+      let result = false;
+      if (eventToEdit) {
+        result = events.replace(eventToEdit, evt.detail.event);
+      } else {
+        result = events.add(evt.detail.event);
+      }
+      eventToEdit = null;
+      if (result) {
+        showEventForm = false;
+      }
+    }}
+    on:cancel={() => {
+      eventToEdit = null;
+      showEventForm = false;
+    }} />
+{/if}
