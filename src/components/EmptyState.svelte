@@ -21,7 +21,12 @@
 <div
   class="flex flex-col justify-center items-center content-center {className}">
   <h1 class="text-2xl mb-4 text-center">You don't have any events</h1>
-  <img class="w-1/2 mx-auto" src={empty} alt="Empty state" />
+  <figure class="w-1/2 mx-auto">
+    <img src={empty} alt="Empty state" />
+    <figcaption class="text-right text-xs text-gray-500 mb-1">
+      <a href="https://undraw.co" target="_blank">undraw.co</a>
+    </figcaption>
+  </figure>
   <div class="w-full text-center mt-4">
     <EventTimer
       class="bg-white rounded shadow-xl"

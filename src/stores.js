@@ -1,10 +1,50 @@
-import { readable } from "svelte/store";
+import { readable, writable, derived } from "svelte/store";
 import moment from "moment";
 import { isDev } from "app/utils/env";
 import { serialize, deserialize } from "app/utils/serialization";
+import { detectLocale } from "app/utils/locale";
+
+// -----------------------
+// Locales store
+// Stores composing using derived store
+// -----------------------
+const detectedLocale = writable(null);
+
+const supportedLocales = writable(null);
+
+const fetchDetectedLocale = locales =>
+  detectedLocale.set(
+    detectLocale(locales).then(locale => detectedLocale.set(locale))
+  );
+
+const fetchSupportedLocales = () =>
+  fetch("/locale/known.json")
+    .then(response => response.json())
+    .then(json => {
+      supportedLocales.set(json);
+      fetchDetectedLocale(json);
+      return json;
+    });
+
+export const locale = derived(
+  [detectedLocale, supportedLocales],
+  ([$detected, $supported], set) => {
+    // both stores can be promises
+    if ($supported instanceof Promise) {
+      set($supported);
+    } else if ($detected instanceof Promise) {
+      set($detected);
+    } else if ($supported === null) {
+      supportedLocales.set(fetchSupportedLocales());
+    } else {
+      set({ detected: $detected, supported: $supported });
+    }
+  }
+);
 
 // -----------------------
 // Readonly time store
+// Simple svelte/readable store with interval
 // -----------------------
 export const time = readable(new Date(), function start(set) {
   const interval = setInterval(() => {
@@ -18,6 +58,7 @@ export const time = readable(new Date(), function start(set) {
 
 // -----------------------
 // Events store
+// Custom implementation of svelte/store interface
 // -----------------------
 const isValidEvent = event =>
   event &&
