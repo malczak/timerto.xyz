@@ -6,9 +6,11 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const Purgecss = require("@fullhuman/postcss-purgecss");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
 
+const config = require("./.config.json") || {};
 const mode = process.env.NODE_ENV || "development";
 const prod = mode === "production";
 console.log(`🏗  Building' for '${mode}'`);
@@ -142,6 +144,11 @@ module.exports = (env = {}) => ({
     : {},
   plugins: [
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new HtmlWebpackPlugin({
+      filename: "index.html",
+      template: "template/index.html",
+      templateParameters: config[`html_${prod ? "prod" : ""}`] || {}
+    }),
     new CopyWebpackPlugin([
       { from: path.resolve("node_modules", "moment", "locale"), to: "locale" }
     ]),
