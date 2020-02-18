@@ -44,7 +44,7 @@
       }
       return map.set(groupName, data);
     }, new Map());
-    console.log(sharedEvents);
+
     const nameCompareFnc = sortOnCompareFnc("name");
     const dateCompareFnc = sortOnCompareFnc("date");
     groupedEvents = [...groupsMap.values()].sort(nameCompareFnc).map(group => {
