@@ -7,7 +7,7 @@
   import Group from "./Group.svelte";
   import Item from "./Item.svelte";
   import Timer from "./Timer.svelte";
-  import { time } from "../stores.js";
+  import { time, locale } from "../stores.js";
 
   // -----------------------
   // Properties

@@ -25,7 +25,10 @@ export const deserialize = data => {
   if (v == Version) {
     return events.map(e => ({
       name: e.n,
-      date: moment.unix(e.t).utc(),
+      date: moment
+        .unix(e.t)
+        .utc()
+        .toDate(),
       ...(e.g != null && { group: groups[e.g] }),
       ...(e.a === true && { autoremove: true })
     }));

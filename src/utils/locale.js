@@ -4,39 +4,18 @@ import getUserLocale from "get-user-locale";
 export function detectLocale(knownLocales) {
   window.moment = moment;
 
-  const locale = getUserLocale().toLowerCase();
-  const [, s1, s2] = locale.match(
-    /^(?:(?:([a-z]{2})(?:\-\1)?)|([a-z]{2}\-[a-z]{2}))$/i
-  );
+  const locale = (getUserLocale() || "").toLowerCase();
 
-  let matchedLocale = null;
-  // eq. en
-  if (s1) {
-    if (knownLocales.includes(s1)) {
-      matchedLocale = s1;
-    }
-  } else if (s2) {
-    // find -> if not s2 = locale.substring(0,2)
-    if (knownLocales.includes(s2)) {
-      matchedLocale = s2;
-    } else {
-      const s3 = locale.substring(0, 2);
-      if (knownLocales.includes(s3)) {
-        matchedLocale = s3;
-      }
-    }
-  } else {
-    // unexpected locale
+  // find matchin known locale 'xx-XX' or 'xx'
+  const locales = [locale, locale.substring(0, 2)];
+  while (locales.length && !knownLocales.includes(locales[0])) {
+    locales.shift();
   }
-
-  console.log(" Detected ->", locale);
-  console.log(" Matched ->", matchedLocale);
-
+  const matchedLocale = locales[0];
   if (matchedLocale) {
     return new Promise(resolve => {
       var script = document.createElement("script");
       script.onload = function() {
-        console.log("LOADED LOCALE", moment.locale());
         moment.locale(matchedLocale);
         resolve(matchedLocale);
       };

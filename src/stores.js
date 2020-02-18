@@ -26,15 +26,18 @@ const fetchSupportedLocales = () =>
       return json;
     });
 
+// create derived store by joining two writable stores.\
+// both input stores are asynchronous (ie. can be promises) and relay on on the other
 export const locale = derived(
   [detectedLocale, supportedLocales],
   ([$detected, $supported], set) => {
-    // both stores can be promises
+    // both stores can be promises - use promise as derived value
     if ($supported instanceof Promise) {
       set($supported);
     } else if ($detected instanceof Promise) {
       set($detected);
     } else if ($supported === null) {
+      // load all known locales then load locale file
       supportedLocales.set(fetchSupportedLocales());
     } else {
       set({ detected: $detected, supported: $supported });

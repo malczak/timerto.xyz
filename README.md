@@ -52,3 +52,27 @@ then
 ```bash
 yarn run now
 ```
+
+### Adding your own Google Analytics
+
+It's possible to integrate your own instance with Google Analytics.
+Its possible by adding `.config.json` file with analytics id.
+
+Create config file (will be ignored by git)
+
+```bash
+touch .config.json.
+```
+
+And add you analytics id's for production and dev (optional).
+
+```json
+{
+  "html_prod": {
+    "analyticsId": "XX-xxxxxxxxxx-x"
+  },
+  "html": {
+    "analyticsId": "XX-xxxxxxxxxx-x"
+  }
+}
+```
