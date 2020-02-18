@@ -116,7 +116,7 @@ class EventsStore /* implements SvelteStore */ {
             .unix(timestamp)
             .utc()
             .toDate(),
-          group: "* Shared with you *",
+          shared: true,
           ...(autoremove === true && { autoremove: true })
         };
       }
@@ -173,7 +173,9 @@ class EventsStore /* implements SvelteStore */ {
   }
 
   save() {
-    eventsStorage.set(serialize(this.events));
+    eventsStorage.set(
+      serialize(this.events.filter(event => event.shared !== true))
+    );
   }
 
   add(event) {

@@ -14,9 +14,11 @@
   // -----------------------
   export let group;
   export let collapsed = false;
+  export let collapsable = true;
+  export let editable = true;
 
   $: {
-    collapsed = events.isGroupCollapsed(group.name);
+    collapsed = collapsable && events.isGroupCollapsed(group.name);
   }
 
   // -----------------------
@@ -44,15 +46,18 @@
   <div
     class="group w-full md:max-w-md md:mx-auto rounded border bg-white
     border-gray-300 my-4">
-    {#if group.name !== NoGroup}
-      <button
-        class="bg-gray-300 w-full p-4 flex flex-row items-center group__name"
-        on:click={() => toggleGroupCollapse()}>
-        <p class="flex-1">{group.name}</p>
-        <span class="group__chevron {collapsed ? 'group__chevron--down' : ''}">
-          <ChevronDown />
-        </span>
-      </button>
+    {#if collapsable}
+      {#if group.name !== NoGroup}
+        <button
+          class="bg-gray-300 w-full p-4 flex flex-row items-center group__name"
+          on:click={() => toggleGroupCollapse()}>
+          <p class="flex-1">{group.name}</p>
+          <span
+            class="group__chevron {collapsed ? 'group__chevron--down' : ''}">
+            <ChevronDown />
+          </span>
+        </button>
+      {/if}
     {/if}
 
     {#if !collapsed}
@@ -61,7 +66,7 @@
         in:fade={{ duration: 200 }}
         out:fade={{ duration: 200 }}>
         {#each group.events as event}
-          <EventTimer {event} on:edit on:delete on:share />
+          <EventTimer {event} {editable} on:edit on:delete on:share />
         {/each}
       </div>
     {:else}
