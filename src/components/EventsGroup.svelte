@@ -61,7 +61,7 @@
         in:fade={{ duration: 200 }}
         out:fade={{ duration: 200 }}>
         {#each group.events as event}
-          <EventTimer {event} on:edit on:delete />
+          <EventTimer {event} on:edit on:delete on:share />
         {/each}
       </div>
     {:else}

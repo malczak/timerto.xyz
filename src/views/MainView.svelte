@@ -128,7 +128,24 @@
           <EventsGroup
             {group}
             on:edit={e => (eventToEdit = e.detail.event)}
-            on:delete={e => events.remove(e.detail.event)} />
+            on:delete={e => events.remove(e.detail.event)}
+            on:share={e => {
+              const { event } = e.detail;
+              const data = [event.name, moment
+                  .utc(event.date)
+                  .unix(), event.autoremove === true ? 1 : 0];
+              const blob = new window.Blob([JSON.stringify(data)], {
+                type: 'application/json'
+              });
+              var reader = new window.FileReader();
+              reader.readAsDataURL(blob);
+              reader.onloadend = function() {
+                let base64data = reader.result.replace(/^data:.+;base64,/, '');
+                console.log(document.location.origin);
+                console.log(`${document.location.origin}?e=${base64data}`);
+              };
+              console.log(e.detail.event, data);
+            }} />
         {/each}
       </div>
     {/if}

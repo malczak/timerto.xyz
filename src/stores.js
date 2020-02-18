@@ -93,22 +93,44 @@ class EventsStore /* implements SvelteStore */ {
     return this.events.length;
   }
 
-  load() {
+  async getShared() {
+    const match = /e=(?<hash>[a-zA-Z0-9+\/]+=*)/gm.exec(
+      document.location.search
+    );
+
+    if (match) {
+      const { hash } = match.groups || {};
+      if (hash) {
+        const dataUrl = "data:application/json;base64," + hash;
+        let json = null;
+        try {
+          json = await fetch(dataUrl).then(res => res.json());
+        } catch (e) {
+          return null;
+        }
+
+        const [name, timestamp, autoremove] = json;
+        return {
+          name,
+          date: moment
+            .unix(timestamp)
+            .utc()
+            .toDate(),
+          group: "* Shared with you *",
+          ...(autoremove === true && { autoremove: true })
+        };
+      }
+    }
+
+    return null;
+  }
+
+  async loadStorage() {
     let data = eventsStorage.get();
     if (data) {
       try {
         const events = deserialize(data);
-        this.events = [...events];
-
-        this.groupState = JSON.parse(groupsStorage.get() || "[]").reduce(
-          (state, group) => {
-            state[group] = true;
-            return state;
-          },
-          {}
-        );
-
-        this.notifyAll();
+        return [...events];
       } catch (e) {
         if (isDev) {
           console.error(e);
@@ -118,6 +140,23 @@ class EventsStore /* implements SvelteStore */ {
         }
       }
     }
+  }
+
+  load() {
+    Promise.all([this.getShared(), this.loadStorage()]).then(
+      ([sharedEvents, storedEvents]) => {
+        this.events = [].concat(sharedEvents || []).concat(storedEvents || []);
+        this.groupState = JSON.parse(groupsStorage.get() || "[]").reduce(
+          (state, group) => {
+            state[group] = true;
+            return state;
+          },
+          {}
+        );
+
+        this.notifyAll();
+      }
+    );
   }
 
   // NOTE: naive way but good at this point
