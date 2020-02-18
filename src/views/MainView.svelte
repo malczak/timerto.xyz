@@ -11,6 +11,7 @@
   import AppIcon from "app/components/icons/AppIcon.svelte";
   import Github from "app/components/icons/Github.svelte";
   import TimerEditor from "app/views/TimerEditor.svelte";
+  import ShareLink from "app/components/ShareLink";
   import EmptyState from "app/components/EmptyState.svelte";
   import EventsGroup, { NoGroup } from "app/components/EventsGroup";
 
@@ -22,11 +23,18 @@
   let eventToEdit = null;
   let groupCollapseState = {};
   let groupedEvents = [];
+  let sharedEvents = { events: [] };
+  let eventShareLink = null;
 
   $: showEventForm = eventToEdit != null;
   $: hasEvents = $events.length !== 0;
   $: {
     const groupsMap = $events.reduce((map, event) => {
+      if (event.shared === true) {
+        sharedEvents.events.push(event);
+        return map;
+      }
+
       const groupName = event.group || NoGroup;
       let data = map.get(groupName);
       if (!data) {
@@ -47,6 +55,25 @@
 
   function onAddTimer() {
     showEventForm = true;
+  }
+
+  function createShareLink(event) {
+    const data = [
+      event.name,
+      moment.utc(event.date).unix(),
+      event.autoremove === true ? 1 : 0
+    ];
+
+    const blob = new window.Blob([JSON.stringify(data)], {
+      type: "application/json"
+    });
+
+    var reader = new window.FileReader();
+    reader.readAsDataURL(blob);
+    reader.onloadend = function() {
+      let base64data = reader.result.replace(/^data:.+;base64,/, "");
+      eventShareLink = `${document.location.origin}?e=${base64data}`;
+    };
   }
 </script>
 
@@ -124,13 +151,28 @@
       <EmptyState class="flex-1 w-full" on:click={onAddTimer} />
     {:else}
       <div class="flex-1">
+
+        {#if sharedEvents.events.length}
+          <EventsGroup
+            group={sharedEvents}
+            editable={false}
+            collapsable={false} />
+        {/if}
+
         {#each groupedEvents as group}
           <EventsGroup
             {group}
             on:edit={e => (eventToEdit = e.detail.event)}
-            on:delete={e => events.remove(e.detail.event)} />
+            on:delete={e => events.remove(e.detail.event)}
+            on:share={e => createShareLink(e.detail.event)} />
         {/each}
       </div>
+    {/if}
+
+    {#if eventShareLink}
+      <ShareLink
+        link={eventShareLink}
+        on:close={() => (eventShareLink = null)} />
     {/if}
 
   </div>

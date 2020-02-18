@@ -137,6 +137,13 @@
         on:click={() => dispatch('delete')}>
         delete
       </button>
+      <button
+        class="absolute right-0 bg-white text-xs hover:bg-gray-800 text-gray-700
+        hover:text-white py-1 px-2 mr-10 border left border-gray-500
+        hover:border-transparent rounded"
+        on:click={() => dispatch('share')}>
+        share
+      </button>
     </div>
   {/if}
 </div>
