@@ -106,18 +106,24 @@
   .logo.github {
     color: #181717;
   }
+
+  .logo.move-up {
+    margin-top: -6px;
+  }
 </style>
 
 <div class="app flex-1 bg-gray-100 px-3">
 
   <div class="max-w-3xl mx-auto flex flex-col">
 
-    <ul class="flex py-4">
-      <li class="logo x2">
+    <ul class="flex items-center py-4">
+      <li class="logo x2 move-up">
         <AppIcon />
       </li>
       <li>
-        <span class="inline-block py-1 px-3 text-blue-500">Timer to XYZ</span>
+        <span class="handdrawn text-2xl inline-block py-1 px-3 text-blue-500">
+          Timer to XYZ
+        </span>
       </li>
       <li class="flex-1" />
       {#if hasEvents}

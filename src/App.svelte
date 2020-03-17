@@ -10,11 +10,17 @@
   import "./styles/tailwind.css";
 
   import MainView from "./views/MainView";
+  import AppIcon from "app/components/icons/AppIcon.svelte";
   import { locale } from "./stores";
 </script>
 
 {#await $locale}
-  <p>...loading locales</p>
+  <div class="w-screen h-screen flex items-center justify-center">
+    <div class="w-6 h-6">
+      <AppIcon />
+    </div>
+    <div>...loading locales</div>
+  </div>
 {:then locale}
   <MainView />
 {:catch error}
