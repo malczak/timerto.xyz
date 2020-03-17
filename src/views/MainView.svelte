@@ -11,8 +11,10 @@
   import AppIcon from "app/components/icons/AppIcon.svelte";
   import Github from "app/components/icons/Github.svelte";
   import TimerEditor from "app/views/TimerEditor.svelte";
+  import About from "app/views/About.svelte";
   import ShareLink from "app/components/ShareLink";
   import EmptyState from "app/components/EmptyState.svelte";
+
   import EventsGroup, { NoGroup } from "app/components/EventsGroup";
 
   // -----------------------
@@ -20,6 +22,8 @@
   // -----------------------
 
   let showEventForm = false;
+  let showAbout = false;
+
   let eventToEdit = null;
   let groupCollapseState = {};
   let groupedEvents = [];
@@ -83,7 +87,7 @@
     /* min-height: 100%; */
   }
 
-  .footer .author {
+  .footer .link {
     border-bottom-width: 1px;
     border-bottom-style: dotted;
     margin-bottom: -1px;
@@ -195,6 +199,16 @@
         <SvelteLogo />
       </a>
     </div>
+    +
+    <a
+      class="link text-blue-500 border-blue-500 mx-1"
+      href="/about"
+      on:click={e => {
+        showAbout = !showAbout;
+        e.preventDefault();
+      }}>
+      libs
+    </a>
     and available on
     <div class="logo github mx-1">
       <a href="https://github.com/malczak/timerto.xyz" target="_blank">
@@ -203,7 +217,7 @@
     </div>
     by
     <a
-      class="author ml-1 text-blue-500 border-blue-500"
+      class="link ml-1 text-blue-500 border-blue-500"
       href="https://malczak.info"
       target="_blank">
       Matt
@@ -234,4 +248,8 @@
       eventToEdit = null;
       showEventForm = false;
     }} />
+{/if}
+
+{#if showAbout}
+  <About on:close={() => (showAbout = false)} />
 {/if}
