@@ -7,11 +7,12 @@
 
   import { isDev } from "app/utils/env";
   import { sortOnCompareFnc } from "app/utils/array";
-  import SvelteLogo from "app/components/icons/SvelteLogo.svelte";
-  import AppIcon from "app/components/icons/AppIcon.svelte";
   import Github from "app/components/icons/Github.svelte";
   import TimerEditor from "app/views/TimerEditor.svelte";
   import About from "app/views/About.svelte";
+  import Login from "app/components/Login.svelte";
+  import SvelteLogo from "app/components/icons/SvelteLogo.svelte";
+  import Nav from "app/components/Nav.svelte";
   import ShareLink from "app/components/ShareLink";
   import EmptyState from "app/components/EmptyState.svelte";
 
@@ -23,6 +24,7 @@
 
   let showEventForm = false;
   let showAbout = false;
+  let showLogin = false;
 
   let eventToEdit = null;
   let groupCollapseState = {};
@@ -99,10 +101,6 @@
     height: auto;
   }
 
-  .logo.x2 {
-    width: 32px;
-  }
-
   .logo.svelte {
     color: #ff3e00;
   }
@@ -110,37 +108,15 @@
   .logo.github {
     color: #181717;
   }
-
-  .logo.move-up {
-    margin-top: -6px;
-  }
 </style>
 
 <div class="app flex-1 bg-gray-100 px-3">
 
   <div class="max-w-3xl mx-auto flex flex-col">
 
-    <ul class="flex items-center py-4">
-      <li class="logo x2 move-up">
-        <AppIcon />
-      </li>
-      <li>
-        <span class="handdrawn text-2xl inline-block py-1 px-3 text-blue-500">
-          Timer to XYZ
-        </span>
-      </li>
-      <li class="flex-1" />
-      {#if hasEvents}
-        <li>
-          <button
-            class="inline-block border border-blue-500 rounded py-1 px-3
-            bg-blue-500 text-white"
-            on:click={onAddTimer}>
-            Add timer
-          </button>
-        </li>
-      {/if}
-    </ul>
+    <Nav
+      on:login={() => (showLogin = true)}
+      on:create={() => (showEventForm = true)} />
 
     {#if isDev}
       <button
@@ -252,4 +228,11 @@
 
 {#if showAbout}
   <About on:close={() => (showAbout = false)} />
+{/if}
+
+{#if showLogin}
+  <Login
+    on:close={() => {
+      showLogin = false;
+    }} />
 {/if}

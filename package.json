@@ -12,7 +12,7 @@
     "less": "^3.10.3",
     "less-loader": "^5.0.0",
     "mini-css-extract-plugin": "^0.6.0",
-    "now": "^16.7.3",
+    "now": "^19.2.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
     "postcss-reporter": "^6.0.1",
@@ -22,18 +22,27 @@
     "svelte-loader": "2.13.3",
     "tailwindcss": "^1.1.4",
     "terser-webpack-plugin": "^2.3.2",
+    "vercel": "^19.1.1",
     "webpack": "^4.30.0",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.0",
     "webpack-dev-server": "^3.3.1"
   },
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --content-base public"
+    "build": "cross-env webpack",
+    "deploy": "NODE_ENV=production yarn build && yarn vercel --prod",
+    "watch": "webpack-dev-server --content-base public",
+    "develop": "yarn vercel dev --listen 8888 --debug"
   },
   "dependencies": {
+    "@vercel/node": "^1.7.1",
+    "bowser": "^2.10.0",
     "get-user-locale": "^1.3.0",
-    "moment": "^2.24.0"
+    "jsonwebtoken": "^8.5.1",
+    "mailgun-js": "^0.22.0",
+    "moment": "^2.24.0",
+    "query-string": "^6.13.1",
+    "svelte-routing": "^1.4.2"
   },
   "browserslist": {
     "production": [
@@ -46,5 +55,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "engines": {
+    "node": "12.x"
   }
 }

@@ -12,39 +12,40 @@ const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
 
 const config = require("./.config.json") || {};
 const mode = process.env.NODE_ENV || "development";
+console.log(mode);
 const prod = mode === "production";
 console.log(`🏗  Building' for '${mode}'`);
 
 const purgecss = new Purgecss({
   content: [`./**/*.svelte`],
   rejected: true,
-  defaultExtractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
+  defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
   extractors: [
     {
-      extractor: content => content.match(/[\w-/:]+(?<!:)/g) || [],
-      extensions: ["svelte"]
-    }
+      extractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
+      extensions: ["svelte"],
+    },
   ],
   whitelistPatterns: [/svelte-.*$/gi],
-  whitelistPatternsChildren: [/svelte-.*$/gi]
+  whitelistPatternsChildren: [/svelte-.*$/gi],
 });
 
 module.exports = (env = {}) => ({
   entry: {
-    bundle: ["./src/main.js"]
+    bundle: ["./src/main.js"],
   },
   resolve: {
     alias: {
       svelte: path.resolve("node_modules", "svelte"),
-      app: path.resolve("src")
+      app: path.resolve("src"),
     },
     extensions: [".mjs", ".js", ".svelte"],
-    mainFields: ["svelte", "browser", "module", "main"]
+    mainFields: ["svelte", "browser", "module", "main"],
   },
   output: {
     path: __dirname + "/public",
     filename: "[name].js",
-    chunkFilename: "[name].[id].js"
+    chunkFilename: "[name].[id].js",
   },
   module: {
     rules: [
@@ -54,9 +55,9 @@ module.exports = (env = {}) => ({
           loader: "svelte-loader",
           options: {
             emitCss: true,
-            hotReload: true
-          }
-        }
+            hotReload: true,
+          },
+        },
       },
       {
         test: /\.less$/,
@@ -67,13 +68,13 @@ module.exports = (env = {}) => ({
             options: {
               modules: true,
               sourceMap: true,
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
           {
-            loader: "less-loader"
-          }
-        ]
+            loader: "less-loader",
+          },
+        ],
       },
       {
         test: /\.css$/,
@@ -95,14 +96,14 @@ module.exports = (env = {}) => ({
                   ? [
                       purgecss,
                       require("postcss-reporter")({
-                        filter: m => m.text.indexOf("svelte") !== -1
-                      })
+                        filter: (m) => m.text.indexOf("svelte") !== -1,
+                      }),
                     ]
-                  : [])
-              ]
-            }
-          }
-        ]
+                  : []),
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.svg$/,
@@ -111,12 +112,12 @@ module.exports = (env = {}) => ({
             loader: "file-loader",
             options: {
               limit: 4096,
-              name: "assets/[name]-[sha512:hash:base64:7].[ext]"
-            }
-          }
-        ]
-      }
-    ]
+              name: "assets/[name]-[sha512:hash:base64:7].[ext]",
+            },
+          },
+        ],
+      },
+    ],
   },
   mode,
   optimization: prod
@@ -132,14 +133,14 @@ module.exports = (env = {}) => ({
                   zindex: false,
                   mergeIdents: false,
                   reduceIdents: false,
-                  discardUnused: false
-                }
-              ]
+                  discardUnused: false,
+                },
+              ],
             },
-            canPrint: true
+            canPrint: true,
           }),
-          new TerserPlugin()
-        ]
+          new TerserPlugin(),
+        ],
       }
     : {},
   plugins: [
@@ -147,15 +148,15 @@ module.exports = (env = {}) => ({
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "template/index.html",
-      templateParameters: config[`html_${prod ? "prod" : ""}`] || {}
+      templateParameters: config[`html_${prod ? "prod" : ""}`] || {},
     }),
     new CopyWebpackPlugin([
-      { from: path.resolve("node_modules", "moment", "locale"), to: "locale" }
+      { from: path.resolve("node_modules", "moment", "locale"), to: "locale" },
     ]),
     new MiniCssExtractPlugin({
-      filename: "[name].css"
+      filename: "[name].css",
     }),
-    ...(env.analyze === "true" ? [new BundleAnalyzerPlugin()] : [])
+    ...(env.analyze === "true" ? [new BundleAnalyzerPlugin()] : []),
   ],
-  devtool: prod ? false : "source-map"
+  devtool: prod ? false : "source-map",
 });

@@ -1,15 +1,19 @@
 <script>
   import moment from "moment";
-  import empty from "app/assets/empty.svg";
+  import emptyImg from "app/assets/empty.svg";
 
   import EventTimer from "app/components/EventTimer";
   import Timoji from "app/components/Timoji.svelte";
+  import Login from "app/components/Login.svelte";
+  import Btn from "./Btn.svelte";
 
   // -----------------------
   // Properties
   // -----------------------
   let className;
   export { className as class };
+
+  let showLogin = false;
 
   const now = moment();
   let sampleEvent = {
@@ -19,10 +23,11 @@
 </script>
 
 <div
-  class="flex flex-col justify-center items-center content-center {className}">
+  class="flex flex-col justify-center items-center content-center {className}
+  mb-6">
   <h1 class="text-2xl mb-4 text-center">You don't have any events</h1>
-  <figure class="w-1/2 mx-auto">
-    <img src={empty} alt="Empty state" />
+  <figure class="w-1/2 md:w-1/4 mx-auto">
+    <img src={emptyImg} alt="Empty state" />
     <figcaption class="text-right text-xs text-gray-500 mb-1">
       <a href="https://undraw.co" target="_blank">undraw.co</a>
     </figcaption>
@@ -33,11 +38,25 @@
       editable={false}
       event={sampleEvent} />
   </div>
-  <button
-    class="flex items-center bg-blue-500 hover:bg-blue-700 text-white text-lg
-    font-bold py-2 px-4 rounded my-4 capitalize"
-    on:click>
+  <Btn variant="primary" class="my-4" on:click>
     Add your first timer
     <Timoji class="text-2xl ml-2" />
-  </button>
+  </Btn>
+  <div>OR</div>
+  <Btn
+    class="my-4"
+    variant="secondary"
+    on:click={() => {
+      showLogin = true;
+    }}>
+    sign in
+  </Btn>
+  <div>to see your timers</div>
+
+  {#if showLogin}
+    <Login
+      on:close={() => {
+        showLogin = false;
+      }} />
+  {/if}
 </div>

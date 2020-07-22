@@ -39,6 +39,12 @@
       link: "https://fonts.google.com/specimen/Sedgwick+Ave",
       name: "Sedgwick Ave Font",
       desc: "Google Doodle Font."
+    },
+    {
+      link:
+        "https://dribbble.com/shots/3947538-Free-Sketch-mockups-Apple-devices#shot-description",
+      name: "Device mockups",
+      desc: "Free Sketch mockups: Apple devices"
     }
   ];
 </script>

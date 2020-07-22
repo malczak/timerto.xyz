@@ -9,8 +9,13 @@ export function scrollToTopAndLock() {
 }
 
 export function lock() {
-  document.body.style.overflow = "hidden";
+  const { body } = document;
+  if (body.style.overflow === "hidden") {
+    return () => {};
+  }
+
+  body.style.overflow = "hidden";
   return () => {
-    document.body.style.removeProperty("overflow");
+    body.style.removeProperty("overflow");
   };
 }

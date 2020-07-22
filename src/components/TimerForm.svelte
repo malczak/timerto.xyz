@@ -5,6 +5,7 @@
   import GroupPicker from "./GroupPicker.svelte";
   import Switch from "./Switch.svelte";
   import { cn } from "app/utils/clsx";
+  import Btn from "./Btn.svelte";
 
   // NOTE: all dates are in UTC
 
@@ -58,7 +59,7 @@
   });
 </script>
 
-<div class="profileform flex flex-col px-3 {className}">
+<div class="profileform flex flex-col px-8 pt-6 pb-8 {className}">
   <div class="w-full mb-4">
     <label
       class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
@@ -105,21 +106,9 @@
   {/if}
 
   <div class="relative inline-block text-center">
-    <button
-      class={cn('text-white font-bold py-2 px-4 rounded', {
-        'bg-blue-500 hover:bg-blue-700': isValid,
-        'bg-blue-300 hover:bg-blue-300': !isValid
-      })}
-      on:click={onSave}>
-      {label}
-    </button>
     {#if showCancel}
-      <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 ml-4
-        rounded"
-        on:click={() => dispatch('cancel')}>
-        Cancel
-      </button>
+      <Btn variant="secondary" on:click={() => dispatch('cancel')}>Cancel</Btn>
     {/if}
+    <Btn variant="primary" disabled={isValid} on:click={onSave}>{label}</Btn>
   </div>
 </div>
